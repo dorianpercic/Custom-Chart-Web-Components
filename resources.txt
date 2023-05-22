@@ -1,0 +1,9 @@
+https://dev.to/dannyengelman/what-web-technologies-are-required-to-draw-a-pie-chart-in-2021-spoiler-alert-a-standard-web-component-will-do-1j56
+
+
+https://stackoverflow.com/questions/68155960/slotting-a-svg-inside-another-svg-in-a-web-component
+
+
+https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements
+
+
