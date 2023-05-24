@@ -54,4 +54,4 @@ function comparator(a, b) {
   return a - b;
 }
 
-customElements.define('barchart', BarChart);
+customElements.define('bar-chart', BarChart);
