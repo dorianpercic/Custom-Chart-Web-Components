@@ -1,0 +1,8 @@
+Web components:
+
+Grouped Bar Charts:
+
+Data in html
+CSS with custom Chart
+
+how to add datapoint
