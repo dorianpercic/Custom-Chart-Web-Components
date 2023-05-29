@@ -23,21 +23,8 @@ class BarChart extends HTMLElement {
 
     console.log(dataDict);
 
-    var width = 1000;
-    var height = 250;
-    var containsLetters = /[a-zA-Z]/g;
-    var widthAttribute = this.getAttribute('width');
-    var heighthAttribute = this.getAttribute('height');
-    if (widthAttribute && !containsLetters.test(widthAttribute)) {
-      if (parseInt(widthAttribute) > 10) {
-        width = parseInt(widthAttribute);
-      }
-    }
-    if (heighthAttribute && !containsLetters.test(heighthAttribute)) {
-      if (parseInt(heighthAttribute) > 10) {
-        height = parseInt(heighthAttribute);
-      }
-    }
+    var width = this.setChartWidth();
+    var height = this.setChartHeight();
 
     console.log('height = ' + height);
     console.log('width = ' + width);
@@ -83,7 +70,7 @@ class BarChart extends HTMLElement {
 
     barChartSvg
       .append('g')
-      .attr('transform', `translate(${margin.left}, ${height - margin.bottom})`) // Adjusted y-axis position
+      .attr('transform', `translate(${margin.left}, ${height - margin.bottom})`)
       .call(xAxis);
 
     barChartSvg
@@ -113,7 +100,7 @@ class BarChart extends HTMLElement {
       .attr('class', 'x-label')
       .attr('text-anchor', 'end')
       .attr('x', width - margin.right)
-      .attr('y', height - margin.bottom + 20) // Adjusted y-position
+      .attr('y', height - margin.bottom + 20)
       .text('Custom title');
 
     // Y-Axis
@@ -132,8 +119,8 @@ class BarChart extends HTMLElement {
 
   /**
    *
-   * @param {object} dataPointElements: Datapoints are stored here
-   * @returns {map}: Return map of data points: key -> label(string), value -> value(number)
+   * @param {object} dataPointElements: Datapoints are stored here.
+   * @returns {map}: Return map of data points: key -> label(string), value -> value(number).
    */
   getChartDict(dataPointElements) {
     const data = [];
@@ -154,15 +141,49 @@ class BarChart extends HTMLElement {
 
   /**
    *
-   * @param {map} dict: Input dictionary 
-   * @returns {array}: Return array of values of input dictionary
+   * @param {map} dict: Input dictionary
+   * @returns {array}: Return array of values of input dictionary.
    */
   getDictValues(dict) {
-    const returnArray = []
+    const returnArray = [];
     for (var key in dict) {
       returnArray.push(parseInt(dict[key]));
     }
     return returnArray;
+  }
+
+  /**
+   *
+   *
+   * @returns {number}: Return width of bar chart. Default set to 1000.
+   */
+  setChartWidth() {
+    var width = 1000;
+    var containsLetters = /[a-zA-Z]/g;
+    var widthAttribute = this.getAttribute('width');
+    if (widthAttribute && !containsLetters.test(widthAttribute)) {
+      if (parseInt(widthAttribute) > 10) {
+        width = parseInt(widthAttribute);
+      }
+    }
+    return width;
+  }
+
+  /**
+   *
+   *
+   * @returns {number}: Return height of bar chart. Default set to 250.
+   */
+  setChartHeight() {
+    var containsLetters = /[a-zA-Z]/g;
+    var heighthAttribute = this.getAttribute('height');
+    var height = 250;
+    if (heighthAttribute && !containsLetters.test(heighthAttribute)) {
+      if (parseInt(heighthAttribute) > 10) {
+        height = parseInt(heighthAttribute);
+      }
+    }
+    return height;
   }
 }
 
