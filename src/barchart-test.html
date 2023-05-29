@@ -4,10 +4,16 @@
     <meta charset="utf-8" />
     <title>Web components Testing Environment</title>
     <script src="barchart.js" defer></script>
+    <script src="d3.min.js"></script>
   </head>
 
   <body>
     <h1>Web components Testing Environment</h1>
-    <bar-chart> </bar-chart>
+    <bar-chart width="500f" height="250">
+      <data-series>
+        <data-point>30,3</data-point>
+        <data-point>50,3</data-point>
+      </data-series>
+    </bar-chart>
   </body>
 </html>

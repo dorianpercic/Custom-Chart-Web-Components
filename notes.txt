@@ -1,8 +1,75 @@
-Web components:
+Project Topic:  HTML Chart Elements with Web Components
 
-Grouped Bar Charts:
+style with CSS
 
-Data in html
-CSS with custom Chart
+<bar-chart title="Election Results">
+<dataseries>
+<datapoint>ÖVP,42.5</datapoint>
+<datapoint>SPÖ,25.5</datapoint>
+</dataseries>
+</bar-chart>
 
-how to add datapoint
+<line-chart title="Students in Graz">
+<dataseries title="TU Graz">
+<datapoint>2017,13360</datapoint>
+<datapoint>2018,13743</datapoint>
+<datapoint>2019,13743</datapoint>
+</dataseries>
+<dataseries title="KFU Graz">
+<datapoint>2017,13360</datapoint>
+<datapoint>2018,13743</datapoint>
+<datapoint>2019,13743</datapoint>
+</dataseries>
+</line-chart>
+
+
+implement with WebComponents
+https://www.webcomponents.org/
+https://developer.mozilla.org/en-US/docs/Web/API/Web_components
+
+
+
+https://tradingview.github.io/lightweight-charts/
+https://tradingview.github.io/lightweight-charts/tutorials/webcomponents/custom-element
+https://github.com/tradingview/lightweight-charts
+
+
+Javascript Web Components Library
+https://www.htmlelements.com/demos/chart/line-series/
+
+
+
+https://www.infragistics.com/products/ignite-ui-web-components/web-components/components/charts/types/line-chart
+$1,095 a year
+
+
+https://css-tricks.com/the-many-ways-of-getting-data-into-charts/
+
+data in a HTML table
+
+<line-chart title="Students in Graz">
+<table>
+<thead>
+<tr><th>Year</th><th>TUG</th><th>KFU</th></tr>
+</thead>
+<tbody>
+<tr><td>2010</td><td>11060</td><td>22071</td></tr>
+<tr><td>2011</td><td>11555</td><td>22837</td></tr>
+<tr><td>2012</td><td>11737</td><td>23020</td></tr>
+</tbody>
+</table>
+</line-chart>
+
+
+
+
+
+https://dev.to/dannyengelman/what-web-technologies-are-required-to-draw-a-pie-chart-in-2021-spoiler-alert-a-standard-web-component-will-do-1j56
+
+<pie-chart>
+  <slice size="90" stroke="green">HTML</slice>
+  <slice size="1"  stroke="red">JavaScript</slice>
+  <slice size="9"  stroke="blue">CSS</slice>
+</pie-chart>
+
+
