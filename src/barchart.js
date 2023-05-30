@@ -3,37 +3,52 @@ class BarChart extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
   }
-
   connectedCallback() {
-    const dataSeriesElement = this.querySelector('data-series');
-    if (!dataSeriesElement) {
-      console.error('[Error] <data-series> element not found');
-      return;
+    if (this.querySelector('table')) {
+      this.handleTableMode();
+    } else if (this.querySelector('data-series')) {
+      this.handleDataSeriesMode();
+    } else {
+      console.error('Invalid structure: No table or data series found');
     }
-
-    const dataPointElements = dataSeriesElement.querySelectorAll('data-point');
-    if (!dataPointElements.length) {
-      console.error(
-        '[Error] No <data-point> elements found inside <data-series>'
-      );
-      return;
-    }
-
-    const dataDict = this.getChartDict(dataPointElements);
-    if (dataDict === null) return null;
-
-    console.log(dataDict);
-
-    let width = this.setChartWidth();
-    let height = this.setChartHeight();
-
-    console.log('height = ' + height);
-    console.log('width = ' + width);
-    this.drawBarChart(width, height, dataDict);
   }
 
   /**
+   * Function for drawing the bar chart usind data series.
    *
+   *
+   *
+   */
+  handleTableMode() {
+    try {
+      const dataDict = this.getTableDict();
+      const width = this.setChartWidth();
+      const height = this.setChartHeight();
+      this.drawBarChart(width, height, dataDict);
+    } catch (error) {
+      console.error('[Error]', error.message);
+    }
+  }
+
+  /**
+   * Function for drawing the bar chart in table mode.
+   *
+   *
+   *
+   */
+  handleDataSeriesMode() {
+    try {
+      const dataDict = this.getDataSeriesDict();
+      const width = this.setChartWidth();
+      const height = this.setChartHeight();
+      this.drawBarChart(width, height, dataDict);
+    } catch (error) {
+      console.error('[Error]', error.message);
+    }
+  }
+
+  /**
+   * Function drawing the bar chart and adding to the Shadow DOM.
    * @param {number} width: Width of chart
    * @param {number} height: Height of chart
    * @param {map} dataDict: Array of data points
@@ -119,51 +134,69 @@ class BarChart extends HTMLElement {
   }
 
   /**
-   *
+   * Function, which creates the chart dictionary.
    * @param {object} dataPointElements: Datapoints are stored here.
    * @returns {map}: Return map of data points: key -> label(string), value -> value(number).
    */
-  getChartDict(dataPointElements) {
-    let validDataPoint = true;
+  getDataSeriesDict() {
+    const isValidStructure = Array.from(this.children).every(
+      (child) =>
+        child.nodeName.toLowerCase() === 'data-series' &&
+        Array.from(child.children).every(
+          (grandchild) => grandchild.nodeName.toLowerCase() === 'data-point'
+        )
+    );
+
+    if (!isValidStructure) {
+      throw new Error(
+        'Invalid structure: The correct structure is: <bar-chart> <data-series> <data-point>...</data-point> </data-series> </bar-chart>'
+      );
+    }
+
+    const dataSeriesElement = this.querySelector('data-series');
+
+    if (!dataSeriesElement) {
+      throw new Error('<data-series> element not found');
+    }
+
+    const dataPointElements = dataSeriesElement.querySelectorAll('data-point');
+    if (!dataPointElements.length) {
+      throw new Error('No <data-point> elements found inside <data-series>');
+    }
     let dataDict = {};
 
     dataPointElements.forEach((dataPoint) => {
       let dataPointInnerHtml = dataPoint.innerHTML.replace(/\s/g, '');
       let dataValues = dataPointInnerHtml.split(',');
-      if (!this.isValidNumber(dataValues[0])) {
-        console.error(
-          `[Error] <data-point> value ${dataValues[0]} is not a valid number.`
+      if (!dataValues[0] || !dataValues[1]) {
+        throw new Error(
+          `<data-point> value ${dataPointInnerHtml}cannot be parsed`
         );
-        validDataPoint = false;
-        return;
-      } else if (!dataValues[1]) {
-        console.error(
-          `<data-point> value ${dataPointInnerHtml} cannot be parsed.`
+      } else if (!this.isValidNumber(dataValues[0])) {
+        throw new Error(
+          `<data-point> value ${dataValues[0]}is not a valid input for bar chart`
         );
-        validDataPoint = false;
-        return;
       }
-      dataDict[dataValues[1]] = parseInt(dataValues[0]);
+      dataDict[dataValues[1]] = parseFloat(dataValues[0]);
     });
-    if (!validDataPoint) return null;
     return dataDict;
   }
 
   /**
-   *
+   * Function returning an array of the values of the input dictionary.
    * @param {map} dict: Input dictionary
    * @returns {array}: Return array of values of input dictionary.
    */
   getDictValues(dict) {
     const returnArray = [];
     for (let key in dict) {
-      returnArray.push(parseInt(dict[key]));
+      returnArray.push(parseFloat(dict[key]));
     }
     return returnArray;
   }
 
   /**
-   *
+   * Function setting the chart width.
    *
    * @returns {number}: Return width of bar chart. Default set to 1000.
    */
@@ -180,7 +213,7 @@ class BarChart extends HTMLElement {
   }
 
   /**
-   *
+   * Function setting the chart height.
    *
    * @returns {number}: Return height of bar chart. Default set to 250.
    */
@@ -197,12 +230,16 @@ class BarChart extends HTMLElement {
   }
 
   /**
-   *
+   * Function, which cheks if the input number is a valid number.
    * @param {string} str: Input string to check for.
    * @returns {boolean}: Return true if string contains only numbers, else false.
    */
   isValidNumber(num) {
     return !isNaN(parseFloat(num)) && isFinite(num);
+  }
+
+  getTableDict() {
+    return null;
   }
 }
 
