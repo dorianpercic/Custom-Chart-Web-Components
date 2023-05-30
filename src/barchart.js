@@ -20,11 +20,12 @@ class BarChart extends HTMLElement {
     }
 
     const dataDict = this.getChartDict(dataPointElements);
+    if (dataDict === null) return null;
 
     console.log(dataDict);
 
-    var width = this.setChartWidth();
-    var height = this.setChartHeight();
+    let width = this.setChartWidth();
+    let height = this.setChartHeight();
 
     console.log('height = ' + height);
     console.log('width = ' + width);
@@ -123,19 +124,28 @@ class BarChart extends HTMLElement {
    * @returns {map}: Return map of data points: key -> label(string), value -> value(number).
    */
   getChartDict(dataPointElements) {
-    const data = [];
-    const labels = ['a', 'b'];
+    let validDataPoint = true;
+    let dataDict = {};
 
     dataPointElements.forEach((dataPoint) => {
-      var dataPointInnerHtml = dataPoint.innerHTML;
-      dataPointInnerHtml = dataPointInnerHtml.replace(/\s/g, '');
-      var dataValues = dataPointInnerHtml.split(',');
-      data.push(parseInt(dataValues[0]));
+      let dataPointInnerHtml = dataPoint.innerHTML.replace(/\s/g, '');
+      let dataValues = dataPointInnerHtml.split(',');
+      if (!this.isValidNumber(dataValues[0])) {
+        console.error(
+          `[Error] <data-point> value ${dataValues[0]} is not a valid number.`
+        );
+        validDataPoint = false;
+        return;
+      } else if (!dataValues[1]) {
+        console.error(
+          `<data-point> value ${dataPointInnerHtml} cannot be parsed.`
+        );
+        validDataPoint = false;
+        return;
+      }
+      dataDict[dataValues[1]] = parseInt(dataValues[0]);
     });
-    var dataDict = {};
-    for (let [index, val] of labels.entries()) {
-      dataDict[val] = data[index];
-    }
+    if (!validDataPoint) return null;
     return dataDict;
   }
 
@@ -146,7 +156,7 @@ class BarChart extends HTMLElement {
    */
   getDictValues(dict) {
     const returnArray = [];
-    for (var key in dict) {
+    for (let key in dict) {
       returnArray.push(parseInt(dict[key]));
     }
     return returnArray;
@@ -158,10 +168,10 @@ class BarChart extends HTMLElement {
    * @returns {number}: Return width of bar chart. Default set to 1000.
    */
   setChartWidth() {
-    var width = 1000;
-    var containsLetters = /[a-zA-Z]/g;
-    var widthAttribute = this.getAttribute('width');
-    if (widthAttribute && !containsLetters.test(widthAttribute)) {
+    let width = 1000;
+    let containsLettersRegex = /[a-zA-Z]/g;
+    let widthAttribute = this.getAttribute('width');
+    if (widthAttribute && !containsLettersRegex.test(widthAttribute)) {
       if (parseInt(widthAttribute) > 10) {
         width = parseInt(widthAttribute);
       }
@@ -175,15 +185,24 @@ class BarChart extends HTMLElement {
    * @returns {number}: Return height of bar chart. Default set to 250.
    */
   setChartHeight() {
-    var containsLetters = /[a-zA-Z]/g;
-    var heighthAttribute = this.getAttribute('height');
-    var height = 250;
-    if (heighthAttribute && !containsLetters.test(heighthAttribute)) {
+    let containsLettersRegex = /[a-zA-Z]/g;
+    let heighthAttribute = this.getAttribute('height');
+    let height = 250;
+    if (heighthAttribute && !containsLettersRegex.test(heighthAttribute)) {
       if (parseInt(heighthAttribute) > 10) {
         height = parseInt(heighthAttribute);
       }
     }
     return height;
+  }
+
+  /**
+   *
+   * @param {string} str: Input string to check for.
+   * @returns {boolean}: Return true if string contains only numbers, else false.
+   */
+  isValidNumber(num) {
+    return !isNaN(parseFloat(num)) && isFinite(num);
   }
 }
 
