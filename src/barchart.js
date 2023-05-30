@@ -7,10 +7,10 @@ class BarChart extends HTMLElement {
   connectedCallback() {
     if (this.querySelector('table')) {
       this.handleTableMode();
-    } else if (this.querySelector('data-series')) {
+    } else if (this.querySelector('dataseries')) {
       this.handleDataSeriesMode();
     } else {
-      console.error('Invalid structure: No table or data series found');
+      console.error('Invalid chart structure: No table or data series found');
     }
   }
 
@@ -139,15 +139,15 @@ class BarChart extends HTMLElement {
    * @returns {map}: Return map of data points: key -> label(string), value -> number.
    */
   getDataSeriesDict() {
-    const dataSeriesElement = this.querySelector('data-series');
+    const dataSeriesElement = this.querySelector('dataseries');
 
     if (!dataSeriesElement) {
-      throw new Error('<data-series> element not found');
+      throw new Error('<dataseries> element not found');
     }
 
-    const dataPointElements = dataSeriesElement.querySelectorAll('data-point');
+    const dataPointElements = dataSeriesElement.querySelectorAll('datapoint');
     if (!dataPointElements.length) {
-      throw new Error('No <data-point> elements found inside <data-series>');
+      throw new Error('No <datapoint> elements found inside <dataseries>');
     }
     let dataDict = {};
 
@@ -155,10 +155,10 @@ class BarChart extends HTMLElement {
       let dataPointInnerHtml = dataPoint.innerHTML.replace(/\s/g, '');
       let dataValues = dataPointInnerHtml.split(',');
       if (!dataValues[0]) {
-        throw new Error(`<data-point> value is missing`);
+        throw new Error(`<datapoint> value is missing`);
       } else if (!this.isValidNumber(dataValues[0])) {
         throw new Error(
-          `<data-point> value ${dataValues[0]} is not a valid input for chart`
+          `<datapoint> value ${dataValues[0]} is not a valid input for chart`
         );
       }
       dataDict[dataValues[1]] = parseFloat(dataValues[0]);
