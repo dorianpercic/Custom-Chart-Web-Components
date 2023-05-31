@@ -18,7 +18,9 @@ class BarChart extends HTMLElement {
       <span>Hello, bar component!</span>
     `;
   }
-
+  /** This life-cycle method will be called as soon as the web component 
+   * is attached to the DOM.
+  */
   connectedCallback() {
     if (this.querySelector('table')) {
       this.handleTableMode();
@@ -263,4 +265,5 @@ class BarChart extends HTMLElement {
   }
 }
 
+/** Define custom web component. */
 customElements.define('bar-chart', BarChart);
