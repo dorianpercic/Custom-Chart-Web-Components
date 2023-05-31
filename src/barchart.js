@@ -1,7 +1,22 @@
+/** Class for bar chart web component. */
 class BarChart extends HTMLElement {
+  /**
+   * Constructor of web component, create Shadow DOM.
+   * @constructor
+   */
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: 'open' }).innerHTML = `
+      <style>
+        :host {
+          --background: lightblue;
+        }
+        span {
+          background: var(--background);
+        }
+      </style>
+      <span>Hello, bar component!</span>
+    `;
   }
 
   connectedCallback() {
@@ -14,12 +29,7 @@ class BarChart extends HTMLElement {
     }
   }
 
-  /**
-   * Function for drawing the chart usind data series.
-   *
-   *
-   *
-   */
+  /** Function for drawing the chart usind data series. */
   handleTableMode() {
     try {
       const dataDict = this.getTableDict();
@@ -31,12 +41,7 @@ class BarChart extends HTMLElement {
     }
   }
 
-  /**
-   * Function for drawing the chart in table mode.
-   *
-   *
-   *
-   */
+  /** Function for drawing the chart in table mode. */
   handleDataSeriesMode() {
     try {
       const dataDict = this.getDataSeriesDict();
@@ -52,7 +57,7 @@ class BarChart extends HTMLElement {
    * Function drawing the chart and adding to the Shadow DOM.
    * @param {number} width: Width of chart
    * @param {number} height: Height of chart
-   * @param {map} dataDict: Array of data points
+   * @param {{key: string, value: number}} dataDict: Dictionary of data points
    */
   drawBarChart(width, height, dataDict) {
     const margin = {
@@ -135,8 +140,7 @@ class BarChart extends HTMLElement {
 
   /**
    * Function, which creates the chart dictionary out of data series.
-   *
-   * @returns {map}: Return map of data points: key -> label(string), value -> number.
+   * @returns {{key: string, value: number}}: Return dictionary of data points: key -> string, value -> number.
    */
   getDataSeriesDict() {
     const dataSeriesElement = this.querySelector('dataseries');
@@ -168,8 +172,8 @@ class BarChart extends HTMLElement {
 
   /**
    * Function returning an array of the values of the input dictionary.
-   * @param {map} dict: Input dictionary
-   * @returns {array}: Return array of values of input dictionary.
+   * @param {{key: string, value: number}} dict: Input dictionary
+   * @returns {Array}: Return array of values of input dictionary.
    */
   getDictValues(dict) {
     const returnArray = [];
@@ -181,7 +185,6 @@ class BarChart extends HTMLElement {
 
   /**
    * Function setting the chart width.
-   *
    * @returns {number}: Return width of chart. Default set to 1000.
    */
   setChartWidth() {
@@ -198,7 +201,6 @@ class BarChart extends HTMLElement {
 
   /**
    * Function setting the chart height.
-   *
    * @returns {number}: Return height of chart. Default set to 250.
    */
   setChartHeight() {
@@ -224,8 +226,7 @@ class BarChart extends HTMLElement {
 
   /**
    * Function, which creates the chart dictionary out of input table.
-   *
-   * @returns {map}: Return map of data points: key -> label(string), value -> number.
+   * @returns {{key: string, value: number}}: Return dictionary of data points: key -> string, value -> number.
    */
   getTableDict() {
     let dataDict = {};

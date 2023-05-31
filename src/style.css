@@ -1,0 +1,4 @@
+/* outside the shadow DOM */
+bar-chart {
+  --background: hotpink; /* overridden value */
+}
