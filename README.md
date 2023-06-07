@@ -18,7 +18,7 @@ The project uses Gulp as a build tool. To build the project, run the following c
 ```npx gulp```
 
 
-This will transpile the source files and generate the compiled JavaScript files for the line chart and bar chart.
+This will transpile the source files and generate the compiled JavaScript files for the line chart and bar chart. They can then be located in the ```src/dist/``` directory.
 
 ## Usage
 
