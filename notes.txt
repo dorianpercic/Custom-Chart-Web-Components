@@ -73,3 +73,28 @@ https://dev.to/dannyengelman/what-web-technologies-are-required-to-draw-a-pie-ch
 </pie-chart>
 
 
+
+
+
+
+
+
+
+######################################################################
+Notes Progress Pres:
+Without hyphen in title
+Do not capitalise in bullet points, and full stop.
+Include d3 library differently. Inlcude libs folder -> 2 files
+Simple Charts should be the name, file "sc.js"
+Simple Chart: Title
+width and height in css -> more responsive therfore, CSS Media Queries.
+width and height can change based on number of bars.
+Center text elements of x and y axis.
+read SVG 1.1 spec, parts of svg 2.0 (css)
+"x-axis tick labels" name of x axis values
+"x-axis title" name
+"y-axis title" name 
+"chart title" name, attribute in html // optional
+for multi line chart we need a legend
+folder for data
+Using TypeScript 

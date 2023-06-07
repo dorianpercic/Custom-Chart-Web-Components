@@ -1,0 +1,18 @@
+{
+  "name": "custom-chart-web-components",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/d3": "^7.4.0",
+    "d3" : "libs/d3-7.8.4",
+    "gulp": "^4.0.2",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "typescript": "^5.1.3"
+  }
+}
