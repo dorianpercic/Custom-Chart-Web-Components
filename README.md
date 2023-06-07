@@ -7,14 +7,14 @@ Custom web components for creating charts. The project includes two types of cha
 To use the custom chart web components, follow these steps:
 
 1. Clone or download the project repository.
-2. Install the required dependencies by running the following command in the project directory:
+2. Install the required dependencies by running the following command in the project root directory:
 
 ```npm install```
 
 ## Building the Project
 
-The project uses Gulp as a build tool. To build the project, run the following command:
-
+The project uses Gulp as a build tool. To build the project, run the following command in the project root directory:
+ 
 ```npx gulp```
 
 
