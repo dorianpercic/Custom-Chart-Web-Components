@@ -1,5 +1,5 @@
-/** Class for bar chart web component. */
-class BarChart extends HTMLElement {
+/** Class for line chart web component. */
+class LineChart extends HTMLElement {
   /**
    * Constructor of web component, create Shadow DOM.
    * @constructor
@@ -16,7 +16,7 @@ class BarChart extends HTMLElement {
           background: var(--background);
         }
       </style>
-      <span>Hello, bar component!</span>
+      <span>Hello, line component!</span>
     `;
   }
 
@@ -39,7 +39,7 @@ class BarChart extends HTMLElement {
       const dataDict = this.getTableDict();
       const width = this.setChartWidth();
       const height = this.setChartHeight();
-      this.drawBarChart(width, height, dataDict);
+      this.drawLineChart(width, height, dataDict);
     } catch (error) {
       console.error('[Error]', error.message);
     }
@@ -51,7 +51,7 @@ class BarChart extends HTMLElement {
       const dataDict = this.getDataSeriesDict();
       const width = this.setChartWidth();
       const height = this.setChartHeight();
-      this.drawBarChart(width, height, dataDict);
+      this.drawLineChart(width, height, dataDict);
     } catch (error) {
       console.error('[Error]', error.message);
     }
@@ -63,87 +63,55 @@ class BarChart extends HTMLElement {
    * @param {number} height: Height of chart
    * @param {{[key: string]: number}} dataDict: Dictionary of data points
    */
-  drawBarChart(
+  drawLineChart(
     width: number,
     height: number,
     dataDict: { [key: string]: number }
   ): void {
-    const margin = {
-      top: height * 0.2,
-      bottom: height * 0.2,
-      left: width * 0.2,
-      right: width * 0.2,
-    };
-    const dataArray = this.getDictValues(dataDict);
+    const margin = { top: 70, right: 30, bottom: 40, left: 80 };
 
-    const chartWidth = width - margin.left - margin.right;
-    const chartHeight = height - margin.top - margin.bottom;
+    const x = d3.scaleTime().range([0, width]);
+    const y = d3.scaleLinear().range([height, 0]);
 
-    const chartSvg = d3
+    const lineChartSvg = d3
       .create('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('version', '1.1');
 
-    const xScale = d3
-      .scaleBand<number>()
-      .domain(d3.range(dataArray.length))
-      .range([0, chartWidth])
-      .padding(0.1);
+    const data = Object.entries(dataDict).map(([key, value]) => ({
+      key: new Date(key),
+      value: value,
+    }));
 
-    const yScale = d3
-      .scaleLinear()
-      .domain([0, d3.max(dataArray) || 0])
-      .range([chartHeight, 0]);
+    x.domain(d3.extent(data, (d) => d.key));
+    y.domain([d3.min(data, (d) => d.value - 5), d3.max(data, (d) => d.value)]);
 
-    const xAxis = d3.axisBottom(xScale);
-    const yAxis = d3.axisLeft(yScale).ticks(5);
-
-    chartSvg
+    lineChartSvg
       .append('g')
-      .attr('transform', `translate(${margin.left}, ${height - margin.bottom})`)
-      .call(xAxis);
+      .attr('transform', `translate(0, ${height})`)
+      .call(
+        d3
+          .axisBottom(x)
+          .ticks(d3.timeMonth.every(1))
+          .tickFormat(d3.timeFormat('%b %Y'))
+      );
 
-    chartSvg
-      .append('g')
-      .attr('transform', `translate(${margin.left}, ${margin.top})`)
-      .call(yAxis);
+    lineChartSvg.append('g').call(d3.axisLeft(y));
 
-    chartSvg
-      .append('g')
-      .selectAll('rect')
-      .data(
-        dataArray.sort((a, b) => {
-          return a - b;
-        })
-      )
-      .join('rect')
-      .attr('x', (_, i) => margin.left + xScale(i))
-      .attr('y', (d) => margin.top + yScale(d))
-      .attr('width', xScale.bandwidth())
-      .attr('height', (d) => chartHeight - yScale(d))
-      .attr('fill', 'red');
+    const line = d3
+      .line<any>()
+      .x((d) => x(d.date))
+      .y((d) => y(d.temperature));
 
-    // X-Axis
-    chartSvg
-      .append('text')
-      .attr('class', 'x-label')
-      .attr('text-anchor', 'end')
-      .attr('x', width - margin.right)
-      .attr('y', height - margin.bottom + 20)
-      .text('Custom title');
+    lineChartSvg
+      .append('path')
+      .datum(data)
+      .attr('fill', 'none')
+      .attr('stroke', 'red')
+      .attr('stroke-width', 1)
+      .attr('d', line);
 
-    // Y-Axis
-    chartSvg
-      .append('text')
-      .attr('class', 'y-label')
-      .attr('text-anchor', 'end')
-      .attr('x', -margin.bottom)
-      .attr('y', margin.left - 60)
-      .attr('dy', '.75em')
-      .attr('transform', 'rotate(-90)')
-      .text('Value');
-
-    this.shadowRoot?.appendChild(chartSvg.node());
+    this.shadowRoot?.appendChild(lineChartSvg.node());
   }
 
   /**
@@ -271,5 +239,5 @@ class BarChart extends HTMLElement {
   }
 }
 
-// Define the custom element "bar-chart"
-customElements.define('bar-chart', BarChart);
+// Define the custom element "line-chart"
+customElements.define('line-chart', LineChart);

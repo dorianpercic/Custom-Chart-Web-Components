@@ -1,6 +1,5 @@
-import * as d3 from 'd3';
-/** Class for bar chart web component. */
-class BarChart extends HTMLElement {
+/** Class for line chart web component. */
+class LineChart extends HTMLElement {
     /**
      * Constructor of web component, create Shadow DOM.
      * @constructor
@@ -8,7 +7,7 @@ class BarChart extends HTMLElement {
     constructor() {
         super();
         // !!Test so far!!
-        this.attachShadow({ mode: "open" }).innerHTML = `
+        this.attachShadow({ mode: 'open' }).innerHTML = `
       <style>
         :host {
           --background: lightblue;
@@ -17,21 +16,21 @@ class BarChart extends HTMLElement {
           background: var(--background);
         }
       </style>
-      <span>Hello, bar component!</span>
+      <span>Hello, line component!</span>
     `;
     }
     /** This life-cycle method will be called as soon as the web component
      * is attached to the DOM.
      */
     connectedCallback() {
-        if (this.querySelector("table")) {
+        if (this.querySelector('table')) {
             this.handleTableMode();
         }
-        else if (this.querySelector("dataseries")) {
+        else if (this.querySelector('dataseries')) {
             this.handleDataSeriesMode();
         }
         else {
-            console.error("Invalid chart structure: No table or data series found");
+            console.error('Invalid chart structure: No table or data series found');
         }
     }
     /** Function for drawing the chart using data series. */
@@ -40,10 +39,10 @@ class BarChart extends HTMLElement {
             const dataDict = this.getTableDict();
             const width = this.setChartWidth();
             const height = this.setChartHeight();
-            this.drawBarChart(width, height, dataDict);
+            this.drawLineChart(width, height, dataDict);
         }
         catch (error) {
-            console.error("[Error]", error.message);
+            console.error('[Error]', error.message);
         }
     }
     /** Function for drawing the chart in table mode. */
@@ -52,10 +51,10 @@ class BarChart extends HTMLElement {
             const dataDict = this.getDataSeriesDict();
             const width = this.setChartWidth();
             const height = this.setChartHeight();
-            this.drawBarChart(width, height, dataDict);
+            this.drawLineChart(width, height, dataDict);
         }
         catch (error) {
-            console.error("[Error]", error.message);
+            console.error('[Error]', error.message);
         }
     }
     /**
@@ -64,89 +63,59 @@ class BarChart extends HTMLElement {
      * @param {number} height: Height of chart
      * @param {{[key: string]: number}} dataDict: Dictionary of data points
      */
-    drawBarChart(width, height, dataDict) {
+    drawLineChart(width, height, dataDict) {
         var _a;
-        const margin = {
-            top: height * 0.2,
-            bottom: height * 0.2,
-            left: width * 0.2,
-            right: width * 0.2,
-        };
-        const dataArray = this.getDictValues(dataDict);
-        const chartWidth = width - margin.left - margin.right;
-        const chartHeight = height - margin.top - margin.bottom;
-        const chartSvg = d3
-            .create("svg")
-            .attr("viewBox", `0 0 ${width} ${height}`)
-            .attr("version", "1.1");
-        const xScale = d3
-            .scaleBand()
-            .domain(d3.range(dataArray.length))
-            .range([0, chartWidth])
-            .padding(0.1);
-        const yScale = d3
-            .scaleLinear()
-            .domain([0, d3.max(dataArray) || 0])
-            .range([chartHeight, 0]);
-        const xAxis = d3.axisBottom(xScale);
-        const yAxis = d3.axisLeft(yScale).ticks(5);
-        chartSvg
-            .append("g")
-            .attr("transform", `translate(${margin.left}, ${height - margin.bottom})`)
-            .call(xAxis);
-        chartSvg
-            .append("g")
-            .attr("transform", `translate(${margin.left}, ${margin.top})`)
-            .call(yAxis);
-        chartSvg
-            .append("g")
-            .selectAll("rect")
-            .data(dataArray.sort((a, b) => {
-            return a - b;
-        }))
-            .join("rect")
-            .attr("x", (_, i) => margin.left + xScale(i))
-            .attr("y", (d) => margin.top + yScale(d))
-            .attr("width", xScale.bandwidth())
-            .attr("height", (d) => chartHeight - yScale(d))
-            .attr("fill", "red");
-        // X-Axis
-        chartSvg
-            .append("text")
-            .attr("class", "x-label")
-            .attr("text-anchor", "end")
-            .attr("x", width - margin.right)
-            .attr("y", height - margin.bottom + 20)
-            .text("Custom title");
-        // Y-Axis
-        chartSvg
-            .append("text")
-            .attr("class", "y-label")
-            .attr("text-anchor", "end")
-            .attr("x", -margin.bottom)
-            .attr("y", margin.left - 60)
-            .attr("dy", ".75em")
-            .attr("transform", "rotate(-90)")
-            .text("Value");
-        (_a = this.shadowRoot) === null || _a === void 0 ? void 0 : _a.appendChild(chartSvg.node());
+        const margin = { top: 70, right: 30, bottom: 40, left: 80 };
+        const x = d3.scaleTime().range([0, width]);
+        const y = d3.scaleLinear().range([height, 0]);
+        const lineChartSvg = d3
+            .create('svg')
+            .attr('viewBox', `0 0 ${width} ${height}`)
+            .attr('version', '1.1');
+        const data = Object.entries(dataDict).map(([key, value]) => ({
+            key: new Date(key),
+            value: value,
+        }));
+        x.domain(d3.extent(data, (d) => d.key));
+        y.domain([d3.min(data, (d) => d.value - 5), d3.max(data, (d) => d.value)]);
+        lineChartSvg
+            .append('g')
+            .attr('transform', `translate(0, ${height})`)
+            .call(d3
+            .axisBottom(x)
+            .ticks(d3.timeMonth.every(1))
+            .tickFormat(d3.timeFormat('%b %Y')));
+        lineChartSvg.append('g').call(d3.axisLeft(y));
+        const line = d3
+            .line()
+            .x((d) => x(d.date))
+            .y((d) => y(d.temperature));
+        lineChartSvg
+            .append('path')
+            .datum(data)
+            .attr('fill', 'none')
+            .attr('stroke', 'red')
+            .attr('stroke-width', 1)
+            .attr('d', line);
+        (_a = this.shadowRoot) === null || _a === void 0 ? void 0 : _a.appendChild(lineChartSvg.node());
     }
     /**
      * Function, which creates the chart dictionary out of data series.
      * @returns {{[key: string]: number}}: Return dictionary of data points: key -> string, value -> number.
      */
     getDataSeriesDict() {
-        const dataSeriesElement = this.querySelector("dataseries");
+        const dataSeriesElement = this.querySelector('dataseries');
         if (!dataSeriesElement) {
-            throw new Error("<dataseries> element not found");
+            throw new Error('<dataseries> element not found');
         }
-        const dataPointElements = dataSeriesElement.querySelectorAll("datapoint");
+        const dataPointElements = dataSeriesElement.querySelectorAll('datapoint');
         if (!dataPointElements.length) {
-            throw new Error("No <datapoint> elements found inside <dataseries>");
+            throw new Error('No <datapoint> elements found inside <dataseries>');
         }
         let dataDict = {};
         dataPointElements.forEach((dataPoint) => {
-            let dataPointInnerHtml = dataPoint.innerHTML.replace(/\s/g, "");
-            let dataValues = dataPointInnerHtml.split(",");
+            let dataPointInnerHtml = dataPoint.innerHTML.replace(/\s/g, '');
+            let dataValues = dataPointInnerHtml.split(',');
             if (!dataValues[0]) {
                 throw new Error(`<datapoint> value is missing`);
             }
@@ -172,7 +141,7 @@ class BarChart extends HTMLElement {
     setChartWidth() {
         let width = 500;
         let containsLettersRegex = /[a-zA-Z]/g;
-        let widthAttribute = this.getAttribute("width");
+        let widthAttribute = this.getAttribute('width');
         if (widthAttribute && !containsLettersRegex.test(widthAttribute)) {
             if (+widthAttribute > 10) {
                 width = +widthAttribute;
@@ -187,7 +156,7 @@ class BarChart extends HTMLElement {
     setChartHeight() {
         let height = 300;
         let containsLettersRegex = /[a-zA-Z]/g;
-        let heightAttribute = this.getAttribute("height");
+        let heightAttribute = this.getAttribute('height');
         if (heightAttribute && !containsLettersRegex.test(heightAttribute)) {
             if (parseInt(heightAttribute) > 10) {
                 height = parseInt(heightAttribute);
@@ -208,22 +177,22 @@ class BarChart extends HTMLElement {
      * @returns {{[key: string]: number}}: Return dictionary of data points: key -> string, value -> number.
      */
     getTableDict() {
-        const tableElement = this.querySelector("table");
+        const tableElement = this.querySelector('table');
         if (!tableElement) {
-            throw new Error("<table> element not found");
+            throw new Error('<table> element not found');
         }
-        const tableRows = Array.from(tableElement.querySelectorAll("tr"));
+        const tableRows = Array.from(tableElement.querySelectorAll('tr'));
         const dataDict = {};
         tableRows.forEach((row) => {
             var _a, _b;
-            const cells = Array.from(row.querySelectorAll("td"));
+            const cells = Array.from(row.querySelectorAll('td'));
             if (cells.length < 2) {
-                throw new Error("Invalid table structure: Each row must have at least two cells");
+                throw new Error('Invalid table structure: Each row must have at least two cells');
             }
             const key = (_a = cells[0].textContent) === null || _a === void 0 ? void 0 : _a.trim();
             const value = (_b = cells[1].textContent) === null || _b === void 0 ? void 0 : _b.trim();
             if (!key || !value) {
-                throw new Error("Invalid table structure: Each cell must have a value");
+                throw new Error('Invalid table structure: Each cell must have a value');
             }
             if (!this.isValidNumber(value)) {
                 throw new Error(`Invalid table structure: Value "${value}" is not a valid number`);
@@ -233,5 +202,5 @@ class BarChart extends HTMLElement {
         return dataDict;
     }
 }
-// Define the custom element "bar-chart"
-customElements.define("bar-chart", BarChart);
+// Define the custom element "line-chart"
+customElements.define('line-chart', LineChart);

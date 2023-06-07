@@ -6,7 +6,7 @@ const tsProject = ts.createProject('tsconfig.json');
 gulp.task('transpile', function () {
   return gulp.src('src/**/*.ts')
     .pipe(tsProject())
-    .pipe(gulp.dest('src/dist'));
+    .pipe(gulp.dest('dist'));
 });
 
 gulp.task('default', gulp.series('transpile'));
