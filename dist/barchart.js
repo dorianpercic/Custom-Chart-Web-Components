@@ -146,13 +146,13 @@ class BarChart extends HTMLElement {
         dataPointElements.forEach((dataPoint) => {
             let dataPointInnerHtml = dataPoint.innerHTML.replace(/\s/g, '');
             let dataValues = dataPointInnerHtml.split(',');
-            if (!dataValues[0]) {
+            if (!dataValues[1]) {
                 throw new Error(`<datapoint> value is missing`);
             }
-            else if (!this.isValidNumber(dataValues[0])) {
-                throw new Error(`<datapoint> value ${dataValues[0]} is not a valid input for chart`);
+            else if (!this.isValidNumber(dataValues[1])) {
+                throw new Error(`<datapoint> value ${dataValues[1]} is not a valid input for chart`);
             }
-            dataDict[dataValues[1]] = parseFloat(dataValues[0]);
+            dataDict[dataValues[0]] = parseFloat(dataValues[1]);
         });
         return dataDict;
     }

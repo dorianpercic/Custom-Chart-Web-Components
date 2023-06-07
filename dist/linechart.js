@@ -48,6 +48,7 @@ class LineChart extends HTMLElement {
     /** Function for drawing the chart in table mode. */
     handleDataSeriesMode() {
         try {
+            console.log('hi');
             const dataDict = this.getDataSeriesDict();
             const width = this.setChartWidth();
             const height = this.setChartHeight();
@@ -66,37 +67,41 @@ class LineChart extends HTMLElement {
     drawLineChart(width, height, dataDict) {
         var _a;
         const margin = { top: 70, right: 30, bottom: 40, left: 80 };
-        const x = d3.scaleTime().range([0, width]);
-        const y = d3.scaleLinear().range([height, 0]);
-        const lineChartSvg = d3
-            .create('svg')
-            .attr('viewBox', `0 0 ${width} ${height}`)
-            .attr('version', '1.1');
+        const innerWidth = width - margin.left - margin.right;
+        const innerHeight = height - margin.top - margin.bottom;
         const data = Object.entries(dataDict).map(([key, value]) => ({
-            key: new Date(key),
+            date: key,
             value: value,
         }));
-        x.domain(d3.extent(data, (d) => d.key));
-        y.domain([d3.min(data, (d) => d.value - 5), d3.max(data, (d) => d.value)]);
-        lineChartSvg
-            .append('g')
-            .attr('transform', `translate(0, ${height})`)
-            .call(d3
-            .axisBottom(x)
-            .ticks(d3.timeMonth.every(1))
-            .tickFormat(d3.timeFormat('%b %Y')));
-        lineChartSvg.append('g').call(d3.axisLeft(y));
+        const x = d3
+            .scalePoint()
+            .range([0, innerWidth])
+            .domain(data.map((d) => d.date));
+        const y = d3
+            .scaleLinear()
+            .range([innerHeight, 0])
+            .domain([0, d3.max(data, (d) => d.value)]);
         const line = d3
             .line()
             .x((d) => x(d.date))
-            .y((d) => y(d.temperature));
-        lineChartSvg
-            .append('path')
+            .y((d) => y(d.value));
+        const lineChartSvg = d3
+            .create('svg')
+            .attr('width', width)
+            .attr('height', height);
+        const g = lineChartSvg
+            .append('g')
+            .attr('transform', `translate(${margin.left},${margin.top})`);
+        g.append('path')
             .datum(data)
             .attr('fill', 'none')
-            .attr('stroke', 'red')
-            .attr('stroke-width', 1)
+            .attr('stroke', 'steelblue')
+            .attr('stroke-width', 1.5)
             .attr('d', line);
+        g.append('g')
+            .attr('transform', `translate(0,${innerHeight})`)
+            .call(d3.axisBottom(x));
+        g.append('g').call(d3.axisLeft(y));
         (_a = this.shadowRoot) === null || _a === void 0 ? void 0 : _a.appendChild(lineChartSvg.node());
     }
     /**
@@ -116,14 +121,15 @@ class LineChart extends HTMLElement {
         dataPointElements.forEach((dataPoint) => {
             let dataPointInnerHtml = dataPoint.innerHTML.replace(/\s/g, '');
             let dataValues = dataPointInnerHtml.split(',');
-            if (!dataValues[0]) {
+            if (!dataValues[1]) {
                 throw new Error(`<datapoint> value is missing`);
             }
-            else if (!this.isValidNumber(dataValues[0])) {
-                throw new Error(`<datapoint> value ${dataValues[0]} is not a valid input for chart`);
+            else if (!this.isValidNumber(dataValues[1])) {
+                throw new Error(`<datapoint> value ${dataValues[1]} is not a valid input for chart`);
             }
-            dataDict[dataValues[1]] = parseFloat(dataValues[0]);
+            dataDict[dataValues[0]] = parseFloat(dataValues[1]);
         });
+        console.log(dataDict);
         return dataDict;
     }
     /**
