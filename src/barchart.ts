@@ -79,7 +79,7 @@ class BarChart extends HTMLElement {
     const chartWidth = width - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;
 
-    const chartSvg = d3
+    const barChartSvg = d3
       .create('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('version', '1.1');
@@ -98,17 +98,17 @@ class BarChart extends HTMLElement {
     const xAxis = d3.axisBottom(xScale);
     const yAxis = d3.axisLeft(yScale).ticks(5);
 
-    chartSvg
+    barChartSvg
       .append('g')
       .attr('transform', `translate(${margin.left}, ${height - margin.bottom})`)
       .call(xAxis);
 
-    chartSvg
+    barChartSvg
       .append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
       .call(yAxis);
 
-    chartSvg
+    barChartSvg
       .append('g')
       .selectAll('rect')
       .data(
@@ -124,7 +124,7 @@ class BarChart extends HTMLElement {
       .attr('fill', 'red');
 
     // X-Axis
-    chartSvg
+    barChartSvg
       .append('text')
       .attr('class', 'x-label')
       .attr('text-anchor', 'end')
@@ -133,7 +133,7 @@ class BarChart extends HTMLElement {
       .text('Custom title');
 
     // Y-Axis
-    chartSvg
+    barChartSvg
       .append('text')
       .attr('class', 'y-label')
       .attr('text-anchor', 'end')
@@ -143,7 +143,7 @@ class BarChart extends HTMLElement {
       .attr('transform', 'rotate(-90)')
       .text('Value');
 
-    this.shadowRoot?.appendChild(chartSvg.node());
+    this.shadowRoot?.appendChild(barChartSvg.node());
   }
 
   /**
