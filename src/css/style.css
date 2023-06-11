@@ -1,5 +1,33 @@
-/* outside the shadow DOM */
-bar-chart {
-  --background: hotpink; /* overridden value */
+/*Changes the labels*/
+svg {
+  font-family: Arial, Helvetica, sans-serif;
+  opacity: 1;
+}
+
+/*Changes the ticks*/
+.tick {
+  font-family: Arial, Helvetica, sans-serif;
+  opacity: 1;
+}
+
+/*Changes the axis, and the area under the line in linechart?*/
+path{
+  opacity: 1;
+
+}
+
+/*Changes the line in linechart*/
+path.line {
+  stroke: red;
+}
+
+/*Changes the bars in barchart*/
+rect {
+  fill:blue;
+  stroke:salmon;
+  stroke-width:1;
+  fill-opacity:0.1;
+  stroke-opacity:0.9;
+  width: 3000
 }
 

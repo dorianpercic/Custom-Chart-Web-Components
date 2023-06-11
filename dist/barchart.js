@@ -6,18 +6,7 @@ class BarChart extends HTMLElement {
      */
     constructor() {
         super();
-        // !!Test so far!!
-        this.attachShadow({ mode: 'open' }).innerHTML = `
-      <style>
-        :host {
-          --background: lightblue;
-        }
-        span {
-          background: var(--background);
-        }
-      </style>
-      <span>Hello, bar component!</span>
-    `;
+        this.attachShadow({ mode: 'open' });
     }
     /** This life-cycle method will be called as soon as the web component
      * is attached to the DOM.
@@ -74,7 +63,7 @@ class BarChart extends HTMLElement {
         const dataArray = this.getDictValues(dataDict);
         const chartWidth = width - margin.left - margin.right;
         const chartHeight = height - margin.top - margin.bottom;
-        const chartSvg = d3
+        const barChartSvg = d3
             .create('svg')
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('version', '1.1');
@@ -89,15 +78,15 @@ class BarChart extends HTMLElement {
             .range([chartHeight, 0]);
         const xAxis = d3.axisBottom(xScale);
         const yAxis = d3.axisLeft(yScale).ticks(5);
-        chartSvg
+        barChartSvg
             .append('g')
             .attr('transform', `translate(${margin.left}, ${height - margin.bottom})`)
             .call(xAxis);
-        chartSvg
+        barChartSvg
             .append('g')
             .attr('transform', `translate(${margin.left}, ${margin.top})`)
             .call(yAxis);
-        chartSvg
+        barChartSvg
             .append('g')
             .selectAll('rect')
             .data(dataArray.sort((a, b) => {
@@ -110,15 +99,15 @@ class BarChart extends HTMLElement {
             .attr('height', (d) => chartHeight - yScale(d))
             .attr('fill', 'red');
         // X-Axis
-        chartSvg
+        barChartSvg
             .append('text')
             .attr('class', 'x-label')
             .attr('text-anchor', 'end')
             .attr('x', width - margin.right)
-            .attr('y', height - margin.bottom + 20)
-            .text('Custom title');
+            .attr('y', height - margin.bottom + 40)
+            .text("Custom label");
         // Y-Axis
-        chartSvg
+        barChartSvg
             .append('text')
             .attr('class', 'y-label')
             .attr('text-anchor', 'end')
@@ -127,7 +116,12 @@ class BarChart extends HTMLElement {
             .attr('dy', '.75em')
             .attr('transform', 'rotate(-90)')
             .text('Value');
-        (_a = this.shadowRoot) === null || _a === void 0 ? void 0 : _a.appendChild(chartSvg.node());
+        (_a = this.shadowRoot) === null || _a === void 0 ? void 0 : _a.appendChild(barChartSvg.node());
+        //Adding CSS
+        let style = document.createElement('link');
+        style.setAttribute('rel', 'stylesheet');
+        style.setAttribute('href', '../css/style.css');
+        this.shadowRoot.append(style);
     }
     /**
      * Function, which creates the chart dictionary out of data series.

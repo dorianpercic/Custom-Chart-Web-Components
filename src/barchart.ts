@@ -6,18 +6,7 @@ class BarChart extends HTMLElement {
    */
   constructor() {
     super();
-    // !!Test so far!!
-    this.attachShadow({ mode: 'open' }).innerHTML = `
-      <style>
-        :host {
-          --background: lightblue;
-        }
-        span {
-          background: var(--background);
-        }
-      </style>
-      <span>Hello, bar component!</span>
-    `;
+    this.attachShadow({ mode: 'open' })
   }
 
   /** This life-cycle method will be called as soon as the web component
@@ -129,9 +118,9 @@ class BarChart extends HTMLElement {
       .attr('class', 'x-label')
       .attr('text-anchor', 'end')
       .attr('x', width - margin.right)
-      .attr('y', height - margin.bottom + 20)
-      .text('Custom title');
-
+      .attr('y', height - margin.bottom + 40)
+      .text("Custom label");
+   
     // Y-Axis
     barChartSvg
       .append('text')
@@ -144,6 +133,12 @@ class BarChart extends HTMLElement {
       .text('Value');
 
     this.shadowRoot?.appendChild(barChartSvg.node());
+
+    //Adding CSS
+    let style = document.createElement('link');
+    style.setAttribute('rel', 'stylesheet');
+    style.setAttribute('href', '../css/style.css');
+    this.shadowRoot.append(style);
   }
 
   /**

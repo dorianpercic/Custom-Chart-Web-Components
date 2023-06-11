@@ -6,18 +6,8 @@ class LineChart extends HTMLElement {
    */
   constructor() {
     super();
-    // !!Test so far!!
-    this.attachShadow({ mode: 'open' }).innerHTML = `
-      <style>
-        :host {
-          --background: lightblue;
-        }
-        span {
-          background: var(--background);
-        }
-      </style>
-      <span>Hello, line component!</span>
-    `;
+
+    this.attachShadow({ mode: 'open' });
   }
 
   /** This life-cycle method will be called as soon as the web component
@@ -105,10 +95,31 @@ class LineChart extends HTMLElement {
 
     g.append('path')
       .datum(data)
+      .attr('class', 'line')
       .attr('fill', 'none')
       .attr('stroke', 'steelblue')
       .attr('stroke-width', 1.5)
       .attr('d', line);
+
+    //x label
+    lineChartSvg
+      .append('text')
+      .attr('class', 'x-label')
+      .attr('text-anchor', 'end')
+      .attr('x', width - margin.right)
+      .attr('y', height - margin.bottom + 40)
+      .text('Custom label');
+
+    //y label
+    lineChartSvg
+      .append('text')
+      .attr('class', 'y-label')
+      .attr('text-anchor', 'end')
+      .attr('x', -margin.bottom)
+      .attr('y', margin.left - 60)
+      .attr('dy', '.75em')
+      .attr('transform', 'rotate(-90)')
+      .text('Value');
 
     g.append('g')
       .attr('transform', `translate(0,${innerHeight})`)
@@ -117,6 +128,11 @@ class LineChart extends HTMLElement {
     g.append('g').call(d3.axisLeft(y));
 
     this.shadowRoot?.appendChild(lineChartSvg.node());
+
+    let style = document.createElement('link');
+    style.setAttribute('rel', 'stylesheet');
+    style.setAttribute('href', '../css/style.css');
+    this.shadowRoot.append(style);
   }
 
   /**
