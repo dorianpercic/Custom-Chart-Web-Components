@@ -65,8 +65,8 @@ class BarChart extends HTMLElement {
       right: width * 0.2,
     };
     const dataDict = dictionaries[0];
-    const headers = dictionaries[1]
-    const dataArray = this.getDictValues(dictionaries[0]);
+    const headers = dictionaries[1];
+    const dataArray = this.getDictValues(dataDict);
 
     const chartWidth = width - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;
@@ -140,7 +140,8 @@ class BarChart extends HTMLElement {
 
   /**
    * Function, which creates the chart dictionary out of data series.
-   * @returns [{{[key: string]: number}}, {{[key: string]: string}}]: Return 2 dictionaries: 1. Data points: key -> string, value -> number.
+   * @returns [{{[key: string]: number}}, {{[key: string]: string}}]: Return 2 dictionaries: 
+   * 1. Data points: key -> string, value -> number.
    * 2. X and Y Axis names: key -> string, value -> string.
    */
   getDataSeriesDict(): [{ [key: string]: number }, { [key: string]: string }] {

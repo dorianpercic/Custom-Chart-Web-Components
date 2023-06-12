@@ -25,24 +25,23 @@ class LineChart extends HTMLElement {
 
   /** Function for drawing the chart using data series. */
   handleTableMode(): void {
-    try {
-      const dataDict = this.getTableDict();
+    /*try {
+      const dictionaries = this.getTableDict();
       const width = this.setChartWidth();
       const height = this.setChartHeight();
-      this.drawLineChart(width, height, dataDict);
+      this.drawLineChart(width, height, dictionaries);
     } catch (error) {
       console.error('[Error]', error.message);
-    }
+    }*/
   }
 
   /** Function for drawing the chart in table mode. */
   handleDataSeriesMode(): void {
     try {
-      console.log('hi');
-      const dataDict = this.getDataSeriesDict();
+      const dictionaries = this.getDataSeriesDict();
       const width = this.setChartWidth();
       const height = this.setChartHeight();
-      this.drawLineChart(width, height, dataDict);
+      this.drawLineChart(width, height, dictionaries);
     } catch (error) {
       console.error('[Error]', error.message);
     }
@@ -52,14 +51,22 @@ class LineChart extends HTMLElement {
    * Function drawing the chart and adding it to the Shadow DOM.
    * @param {number} width: Width of chart
    * @param {number} height: Height of chart
-   * @param {{[key: string]: number}} dataDict: Dictionary of data points
+   * @param [{{[key: string]: number}}, {{[key: string]: string}}] dataDict: 2 dictionaries, 1 consisting of datapoints
+   * and the other of the x and y axis headers.
    */
   drawLineChart(
     width: number,
     height: number,
-    dataDict: { [key: string]: number }
+    dictionaries: [{ [key: string]: number }, { [key: string]: string }]
   ): void {
-    const margin = { top: 70, right: 30, bottom: 40, left: 80 };
+    const margin = {
+      top: height * 0.2,
+      bottom: height * 0.2,
+      left: width * 0.2,
+      right: width * 0.2,
+    };
+    const dataDict = dictionaries[0];
+    const headers = dictionaries[1];
 
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -108,7 +115,7 @@ class LineChart extends HTMLElement {
       .attr('text-anchor', 'end')
       .attr('x', width - margin.right)
       .attr('y', height - margin.bottom + 40)
-      .text('Custom label');
+      .text(headers['x-axis']);
 
     //y label
     lineChartSvg
@@ -119,7 +126,7 @@ class LineChart extends HTMLElement {
       .attr('y', margin.left - 60)
       .attr('dy', '.75em')
       .attr('transform', 'rotate(-90)')
-      .text('Value');
+      .text(headers['y-axis']);
 
     g.append('g')
       .attr('transform', `translate(0,${innerHeight})`)
@@ -137,10 +144,14 @@ class LineChart extends HTMLElement {
 
   /**
    * Function, which creates the chart dictionary out of data series.
-   * @returns {{[key: string]: number}}: Return dictionary of data points: key -> string, value -> number.
+   * @returns [{{[key: string]: number}}, {{[key: string]: string}}]: Return 2 dictionaries:
+   * 1. Data points: key -> string, value -> number.
+   * 2. X and Y Axis names: key -> string, value -> string.
    */
-  getDataSeriesDict(): { [key: string]: number } {
+  getDataSeriesDict(): [{ [key: string]: number }, { [key: string]: string }] {
     const dataSeriesElement = this.querySelector('dataseries');
+    let xAxisName: any = 'x-Axis';
+    let yAxisName: any = 'y-Axis';
 
     if (!dataSeriesElement) {
       throw new Error('<dataseries> element not found');
@@ -150,6 +161,24 @@ class LineChart extends HTMLElement {
     if (!dataPointElements.length) {
       throw new Error('No <datapoint> elements found inside <dataseries>');
     }
+
+    const xAxisQuerySelector = this.querySelector('x-header');
+    xAxisName =
+      xAxisQuerySelector && xAxisQuerySelector.innerHTML !== ''
+        ? xAxisQuerySelector.innerHTML
+        : xAxisName;
+    const yAxisQuerySelector = this.querySelector('y-header');
+    yAxisName =
+      yAxisQuerySelector && yAxisQuerySelector.innerHTML !== ''
+        ? yAxisQuerySelector.innerHTML
+        : yAxisName;
+    let headerDict: { [key: string]: string } = {
+      'x-axis': 'x-axis',
+      'y-axis': 'y-axis',
+    };
+    headerDict['x-axis'] = xAxisName;
+    headerDict['y-axis'] = yAxisName;
+
     let dataDict: { [key: string]: number } = {};
 
     dataPointElements.forEach((dataPoint) => {
@@ -164,8 +193,7 @@ class LineChart extends HTMLElement {
       }
       dataDict[dataValues[0]] = parseFloat(dataValues[1]);
     });
-    console.log(dataDict);
-    return dataDict;
+    return [dataDict, headerDict];
   }
 
   /**
