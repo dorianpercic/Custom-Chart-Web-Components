@@ -140,7 +140,7 @@ class BarChart extends HTMLElement {
 
   /**
    * Function, which creates the chart dictionary out of data series.
-   * @returns [{{[key: string]: number}}, {{[key: string]: string}}]: Return 2 dictionaries: 
+   * @returns [{{[key: string]: number}}, {{[key: string]: string}}]: Return 2 dictionaries:
    * 1. Data points: key -> string, value -> number.
    * 2. X and Y Axis names: key -> string, value -> string.
    */
@@ -158,14 +158,16 @@ class BarChart extends HTMLElement {
       throw new Error('No <datapoint> elements found inside <dataseries>');
     }
 
-    xAxisName = this.querySelector('x-header')
-      ? this.querySelector('x-header').innerHTML
-      : xAxisName;
-
-    yAxisName = this.querySelector('y-header')
-      ? this.querySelector('y-header').innerHTML
-      : yAxisName;
-
+    const xAxisQuerySelector = this.querySelector('x-header');
+    xAxisName =
+      xAxisQuerySelector && xAxisQuerySelector.innerHTML !== ''
+        ? xAxisQuerySelector.innerHTML
+        : xAxisName;
+    const yAxisQuerySelector = this.querySelector('y-header');
+    yAxisName =
+      yAxisQuerySelector && yAxisQuerySelector.innerHTML !== ''
+        ? yAxisQuerySelector.innerHTML
+        : yAxisName;
     let headerDict: { [key: string]: string } = {
       'x-axis': 'x-axis',
       'y-axis': 'y-axis',
