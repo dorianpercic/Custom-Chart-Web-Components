@@ -1,6 +1,6 @@
-# Custom Chart Web Components
+# EasyCharts: HTML Chart Elements with Web Components
 
-Custom web components for creating charts. The project includes two types of charts: line chart and bar chart.
+Custom web components for creating SVG charts. The project includes two types of charts: line chart and bar chart.
 
 ## Installation
 
@@ -18,7 +18,7 @@ The project uses Gulp as a build tool. To build the project, run the following c
 ```npx gulp```
 
 
-This will transpile the source files and generate the compiled JavaScript files for the line chart and bar chart. They can then be located in the ```src/dist/``` directory.
+This will transpile the source files and generate the compiled JavaScript files for the line chart and bar chart. They can then be located in the repsective folder in the ```dist/``` directory.
 
 ## Usage
 

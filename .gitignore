@@ -1,3 +1,4 @@
 node_modules/*
 .npm
-src/.prettierrc.json
+.prettierrc.json
+dist/
