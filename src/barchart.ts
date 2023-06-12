@@ -286,4 +286,4 @@ class BarChart extends HTMLElement {
 }
 
 // Define the custom element "bar-chart"
-customElements.define('bar-chart', BarChart);
+customElements.define('ec-barchart', BarChart);

@@ -290,4 +290,4 @@ class LineChart extends HTMLElement {
 }
 
 // Define the custom element "line-chart"
-customElements.define('line-chart', LineChart);
+customElements.define('ec-linechart', LineChart);
