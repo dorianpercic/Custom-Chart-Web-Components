@@ -29,7 +29,7 @@ To use the custom web components in your HTML files, include the compiled JavaSc
 To add a line chart to your HTML file, use the following custom element:
 
 ```html
-<line-chart></line-chart>
+<ec-linechart></ec-linechart>
 ```
 
 ### Bar Chart
@@ -37,7 +37,7 @@ To add a line chart to your HTML file, use the following custom element:
 To add a bar chart to your HTML file, use the following custom element:
 
 ```html
-<bar-chart></bar-chart>
+<ec-barchart></ec-barchart>
 ```
 
 ## File Structure
