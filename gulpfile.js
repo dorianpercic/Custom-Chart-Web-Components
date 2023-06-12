@@ -34,11 +34,20 @@ function rollup() {
   return Command.execute('rollup -c');
 }
 
-gulp.task('watch', function () {
+gulp.task('watchRollup', function () {
   gulp.watch('src/**/*', gulp.series(rollup));
 });
 
+
+// Default gulp task [npx gulp].
 gulp.task(
   'default',
-  gulp.series('d3-barchart', 'd3-linechart', rollup, 'watch')
+  gulp.series('d3-barchart', 'd3-linechart', rollup)
 );
+
+// Watching changes, if detected -> reload rollup [npx gulp watch].
+gulp.task(
+  'watch', 
+  gulp.series('watchRollup')
+
+)

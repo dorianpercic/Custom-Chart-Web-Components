@@ -24,23 +24,23 @@ class BarChart extends HTMLElement {
 
   /** Function for drawing the chart using data series. */
   handleTableMode(): void {
-    try {
-      const dataDict = this.getTableDict();
+    /*try {
+      const dictionaries = this.getTableDict();
       const width = this.setChartWidth();
       const height = this.setChartHeight();
-      this.drawBarChart(width, height, dataDict);
+      this.drawBarChart(width, height, dictionaries);
     } catch (error) {
       console.error('[Error]', error.message);
-    }
+    }*/
   }
 
   /** Function for drawing the chart in table mode. */
   handleDataSeriesMode(): void {
     try {
-      const dataDict = this.getDataSeriesDict();
+      const dictionaries = this.getDataSeriesDict();
       const width = this.setChartWidth();
       const height = this.setChartHeight();
-      this.drawBarChart(width, height, dataDict);
+      this.drawBarChart(width, height, dictionaries);
     } catch (error) {
       console.error('[Error]', error.message);
     }
@@ -50,12 +50,13 @@ class BarChart extends HTMLElement {
    * Function drawing the chart and adding it to the Shadow DOM.
    * @param {number} width: Width of chart
    * @param {number} height: Height of chart
-   * @param {{[key: string]: number}} dataDict: Dictionary of data points
+   * @param [{{[key: string]: number}}, {{[key: string]: string}}] dataDict: 2 dictionaries, 1 consisting of datapoints
+   * and the other of the x and y axis headers.
    */
   drawBarChart(
     width: number,
     height: number,
-    dataDict: { [key: string]: number }
+    dictionaries: [{ [key: string]: number }, { [key: string]: string }]
   ): void {
     const margin = {
       top: height * 0.2,
@@ -63,7 +64,9 @@ class BarChart extends HTMLElement {
       left: width * 0.2,
       right: width * 0.2,
     };
-    const dataArray = this.getDictValues(dataDict);
+    const dataDict = dictionaries[0];
+    const headers = dictionaries[1]
+    const dataArray = this.getDictValues(dictionaries[0]);
 
     const chartWidth = width - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;
@@ -113,7 +116,7 @@ class BarChart extends HTMLElement {
       .attr('text-anchor', 'end')
       .attr('x', width - margin.right)
       .attr('y', height - margin.bottom + 40)
-      .text('Custom label');
+      .text(headers['y-axis']);
 
     // Y-Axis
     barChartSvg
@@ -124,7 +127,7 @@ class BarChart extends HTMLElement {
       .attr('y', margin.left - 60)
       .attr('dy', '.75em')
       .attr('transform', 'rotate(-90)')
-      .text('Value');
+      .text(headers['x-axis']);
 
     this.shadowRoot?.appendChild(barChartSvg.node());
 
@@ -137,9 +140,10 @@ class BarChart extends HTMLElement {
 
   /**
    * Function, which creates the chart dictionary out of data series.
-   * @returns {{[key: string]: number}}: Return dictionary of data points: key -> string, value -> number.
+   * @returns [{{[key: string]: number}}, {{[key: string]: string}}]: Return 2 dictionaries: 1. Data points: key -> string, value -> number.
+   * 2. X and Y Axis names: key -> string, value -> string.
    */
-  getDataSeriesDict(): { [key: string]: number } {
+  getDataSeriesDict(): [{ [key: string]: number }, { [key: string]: string }] {
     const dataSeriesElement = this.querySelector('dataseries');
     let xAxisName: any = 'x-Axis';
     let yAxisName: any = 'y-Axis';
@@ -156,7 +160,17 @@ class BarChart extends HTMLElement {
     xAxisName = this.querySelector('x-header')
       ? this.querySelector('x-header').innerHTML
       : xAxisName;
-    console.log(xAxisName);
+
+    yAxisName = this.querySelector('y-header')
+      ? this.querySelector('y-header').innerHTML
+      : yAxisName;
+
+    let headerDict: { [key: string]: string } = {
+      'x-axis': 'x-axis',
+      'y-axis': 'y-axis',
+    };
+    headerDict['x-axis'] = xAxisName;
+    headerDict['y-axis'] = yAxisName;
 
     let dataDict: { [key: string]: number } = {};
 
@@ -172,7 +186,7 @@ class BarChart extends HTMLElement {
       }
       dataDict[dataValues[0]] = parseFloat(dataValues[1]);
     });
-    return dataDict;
+    return [dataDict, headerDict];
   }
 
   /**
