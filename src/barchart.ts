@@ -6,7 +6,7 @@ class BarChart extends HTMLElement {
    */
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' })
+    this.attachShadow({ mode: 'open' });
   }
 
   /** This life-cycle method will be called as soon as the web component
@@ -73,10 +73,7 @@ class BarChart extends HTMLElement {
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('version', '1.1');
 
-    const xScale = d3
-      .scaleBand<any>()
-      .range([0, chartWidth])
-      .padding(0.1);
+    const xScale = d3.scaleBand<any>().range([0, chartWidth]).padding(0.1);
 
     xScale.domain(Object.keys(dataDict));
 
@@ -116,8 +113,8 @@ class BarChart extends HTMLElement {
       .attr('text-anchor', 'end')
       .attr('x', width - margin.right)
       .attr('y', height - margin.bottom + 40)
-      .text("Custom label");
-   
+      .text('Custom label');
+
     // Y-Axis
     barChartSvg
       .append('text')

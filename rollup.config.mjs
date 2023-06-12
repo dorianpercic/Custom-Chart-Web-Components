@@ -1,26 +1,21 @@
-import typescript from "rollup-plugin-typescript2";
+import typescript from 'rollup-plugin-typescript2';
+import path from 'path';
 
 export default [
   {
-    input: ["src/linechart.ts"],
+    input: [path.join('src', 'linechart.ts')],
     output: {
-      dir: "dist/linechart/esm",
-      format: "esm",
+      dir: path.join('dist', 'linechart', 'esm'),
+      format: 'esm',
     },
-
-    plugins: [
-      typescript(), // Add the resolve plugin
-    ],
+    plugins: [typescript()],
   },
   {
-    input: ["src/barchart.ts"],
+    input: [path.join('src', 'barchart.ts')],
     output: {
-      dir: "dist/barchart/esm",
-      format: "esm",
+      dir: path.join('dist', 'barchart', 'esm'),
+      format: 'esm',
     },
-
-    plugins: [
-      typescript(), // Add the resolve plugin
-    ],
+    plugins: [typescript()],
   },
 ];

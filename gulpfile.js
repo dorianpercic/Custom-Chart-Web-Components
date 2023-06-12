@@ -1,5 +1,6 @@
 const gulp = require('gulp');
 const ts = require('gulp-typescript');
+const path = require('path');
 const { exec } = require('child_process');
 
 let Command = {
@@ -19,11 +20,15 @@ let Command = {
 };
 
 gulp.task('d3-barchart', async function () {
-  return gulp.src('src/libs/d3.min.js').pipe(gulp.dest('dist/barchart/libs'));
+  return gulp
+    .src(path.join('src', 'libs', 'd3.min.js'))
+    .pipe(gulp.dest(path.join('dist', 'barchart', 'libs')));
 });
 
 gulp.task('d3-linechart', async function () {
-  return gulp.src('src/libs/d3.min.js').pipe(gulp.dest('dist/linechart/libs'));
+  return gulp
+    .src(path.join('src', 'libs', 'd3.min.js'))
+    .pipe(gulp.dest(path.join('dist', 'linechart', 'libs')));
 });
 
 function rollup() {
