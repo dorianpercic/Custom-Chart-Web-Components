@@ -9,7 +9,8 @@ To use the custom chart web components, follow these steps:
 1. Clone or download the project repository.
 2. Install and use the minimum NodeJS version ```v14.18.1 (npm v6.14.15)```.
 3. Install the required dependencies by running the following command in the project root directory:
-`npm install`
+
+>`npm install`
 
 ## Building the Project
 
