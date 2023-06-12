@@ -10,7 +10,7 @@ To use the custom chart web components, follow these steps:
 2. Install and use the minimum NodeJS version ```v14.18.1 (npm v6.14.15)```.
 3. Install the required dependencies by running the following command in the project root directory:
 
->>`npm install`
+>`npm install`
 
 ## Building the Project
 
@@ -28,9 +28,9 @@ To use the custom web components in your HTML files, include the compiled JavaSc
 
 To add a line chart to your HTML file, use the following custom element:
 
->```html
+```html 
 <ec-linechart></ec-linechart>
-```
+>```
 
 ### Bar Chart
 
@@ -38,7 +38,7 @@ To add a bar chart to your HTML file, use the following custom element:
 
 >```html
 <ec-barchart></ec-barchart>
-```
+>```
 
 ## File Structure
 
@@ -65,7 +65,7 @@ EasyCharts
 │  │  └─ d3.min.js
 │  └─ linechart.ts
 └─ tsconfig.json
-```
+>```
 
 ## License
 
