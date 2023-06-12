@@ -9,16 +9,15 @@ To use the custom chart web components, follow these steps:
 1. Clone or download the project repository.
 2. Install the required dependencies by running the following command in the project root directory:
 
-```npm install```
+`npm install`
 
 ## Building the Project
 
 The project uses Gulp as a build tool. To build the project, run the following command in the project root directory:
- 
-```npx gulp```
 
+`npx gulp`
 
-This will transpile the source files and generate the compiled JavaScript files for the line chart and bar chart. They can then be located in the repsective folder in the ```dist/``` directory.
+This will transpile the source files and generate the compiled JavaScript files for the line chart and bar chart. They can then be located in the repsective folder in the `dist/` directory.
 
 ## Usage
 
@@ -27,6 +26,7 @@ To use the custom web components in your HTML files, include the compiled JavaSc
 ### Line Chart
 
 To add a line chart to your HTML file, use the following custom element:
+
 ```html
 <line-chart></line-chart>
 ```
@@ -34,14 +34,38 @@ To add a line chart to your HTML file, use the following custom element:
 ### Bar Chart
 
 To add a bar chart to your HTML file, use the following custom element:
+
 ```html
 <bar-chart></bar-chart>
 ```
 
 ## File Structure
 
-The source files for the web components are located in the ```src/``` directory. The line chart source file is src/linechart.ts, and the bar chart source file is ```src/barchart.ts``` The compiled JavaScript files are generated in the dist directory.
+The source files for the web components are located in the `src/` directory. The line chart source file is src/linechart.ts, and the bar chart source file is `src/barchart.ts` The compiled JavaScript files are generated in the dist directory.
 
-## License 
 
-This project is licensed under the ```MIT License```.
+```
+EasyCharts
+├─ gulpfile.js
+├─ package-lock.json
+├─ package.json
+├─ rollup.config.mjs
+├─ src
+│  ├─ barchart.ts
+│  ├─ css
+│  │  └─ style.css
+│  ├─ data
+│  │  └─ fmi.csv
+│  ├─ html
+│  │  ├─ barchart-table.html
+│  │  └─ linechart-dataseries.html
+│  ├─ libs
+│  │  ├─ d3.js
+│  │  └─ d3.min.js
+│  └─ linechart.ts
+└─ tsconfig.json
+```
+
+## License
+
+This project is licensed under the `MIT License`.
