@@ -74,10 +74,11 @@ class BarChart extends HTMLElement {
       .attr('version', '1.1');
 
     const xScale = d3
-      .scaleBand<number>()
-      .domain(d3.range(dataArray.length))
+      .scaleBand<any>()
       .range([0, chartWidth])
       .padding(0.1);
+
+    xScale.domain(Object.keys(dataDict));
 
     const yScale = d3
       .scaleLinear()
@@ -100,13 +101,9 @@ class BarChart extends HTMLElement {
     barChartSvg
       .append('g')
       .selectAll('rect')
-      .data(
-        dataArray.sort((a, b) => {
-          return a - b;
-        })
-      )
+      .data(dataArray)
       .join('rect')
-      .attr('x', (_, i) => margin.left + xScale(i))
+      .attr('x', (_, i) => margin.left + xScale(Object.keys(dataDict)[i]))
       .attr('y', (d) => margin.top + yScale(d))
       .attr('width', xScale.bandwidth())
       .attr('height', (d) => chartHeight - yScale(d))
