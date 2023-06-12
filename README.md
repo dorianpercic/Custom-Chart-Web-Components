@@ -12,14 +12,6 @@ To use the custom chart web components, follow these steps:
 
 >```npm install```
 
-## Building the Project
-
-The project uses Gulp as a build tool. To build the project, run the following command in the project root directory:
-
->```npx gulp```
-
-This will transpile the source files and generate the compiled JavaScript files for the line chart and bar chart. They can then be located in the repsective folder in the `dist/` directory.
-
 ## Usage
 
 To use the custom web components in your HTML files, include the compiled JavaScript files in your project and use the custom elements in your HTML markup.
@@ -39,6 +31,16 @@ To add a bar chart to your HTML file, use the following custom element:
 ```html
 <ec-barchart></ec-barchart>
 ```
+
+## For Developers
+
+### Building the Project
+
+The project uses Gulp as a build tool. To build the project, run the following command in the project root directory:
+
+>```npx gulp```
+
+This will transpile the source files and generate the compiled JavaScript files for the line chart and bar chart. They can then be located in the repsective folder in the `dist/` directory.
 
 ## File Structure
 
