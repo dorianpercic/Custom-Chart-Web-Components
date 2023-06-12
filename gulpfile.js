@@ -1,5 +1,4 @@
 const gulp = require('gulp');
-const ts = require('gulp-typescript');
 const path = require('path');
 const { exec } = require('child_process');
 
@@ -35,4 +34,11 @@ function rollup() {
   return Command.execute('rollup -c');
 }
 
-gulp.task('default', gulp.series('d3-barchart', 'd3-linechart', rollup));
+gulp.task('watch', function () {
+  gulp.watch('src/**/*', gulp.series(rollup));
+});
+
+gulp.task(
+  'default',
+  gulp.series('d3-barchart', 'd3-linechart', rollup, 'watch')
+);

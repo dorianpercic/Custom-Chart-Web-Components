@@ -128,7 +128,7 @@ class BarChart extends HTMLElement {
 
     this.shadowRoot?.appendChild(barChartSvg.node());
 
-    //Adding CSS
+    // Adding CSS
     let style = document.createElement('link');
     style.setAttribute('rel', 'stylesheet');
     style.setAttribute('href', '../css/style.css');
@@ -141,6 +141,8 @@ class BarChart extends HTMLElement {
    */
   getDataSeriesDict(): { [key: string]: number } {
     const dataSeriesElement = this.querySelector('dataseries');
+    let xAxisName: any = 'x-Axis';
+    let yAxisName: any = 'y-Axis';
 
     if (!dataSeriesElement) {
       throw new Error('<dataseries> element not found');
@@ -150,6 +152,12 @@ class BarChart extends HTMLElement {
     if (!dataPointElements.length) {
       throw new Error('No <datapoint> elements found inside <dataseries>');
     }
+
+    xAxisName = this.querySelector('x-header')
+      ? this.querySelector('x-header').innerHTML
+      : xAxisName;
+    console.log(xAxisName);
+
     let dataDict: { [key: string]: number } = {};
 
     dataPointElements.forEach((dataPoint) => {
