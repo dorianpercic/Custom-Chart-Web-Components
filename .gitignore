@@ -2,3 +2,4 @@ node_modules/*
 .npm
 .prettierrc.json
 dist/
+.vscode
