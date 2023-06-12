@@ -10,13 +10,13 @@ To use the custom chart web components, follow these steps:
 2. Install and use the minimum NodeJS version ```v14.18.1 (npm v6.14.15)```.
 3. Install the required dependencies by running the following command in the project root directory:
 
->`npm install`
+>```npm install```
 
 ## Building the Project
 
 The project uses Gulp as a build tool. To build the project, run the following command in the project root directory:
 
->`npx gulp`
+>```npx gulp```
 
 This will transpile the source files and generate the compiled JavaScript files for the line chart and bar chart. They can then be located in the repsective folder in the `dist/` directory.
 
@@ -30,22 +30,22 @@ To add a line chart to your HTML file, use the following custom element:
 
 ```html 
 <ec-linechart></ec-linechart>
->```
+```
 
 ### Bar Chart
 
 To add a bar chart to your HTML file, use the following custom element:
 
->```html
+```html
 <ec-barchart></ec-barchart>
->```
+```
 
 ## File Structure
 
 The source files for the web components are located in the `src/` directory. The line chart source file is src/linechart.ts, and the bar chart source file is `src/barchart.ts` The compiled JavaScript files are generated in the dist directory.
 
 
->```
+```
 EasyCharts
 ├─ gulpfile.js
 ├─ package-lock.json
@@ -65,8 +65,8 @@ EasyCharts
 │  │  └─ d3.min.js
 │  └─ linechart.ts
 └─ tsconfig.json
->```
+```
 
 ## License
 
-This project is licensed under the `MIT License`.
+This project is licensed under the ```MIT License```.
