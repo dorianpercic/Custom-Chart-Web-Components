@@ -244,13 +244,14 @@ customElements.define('ec-linechart', LineChart);
 
 /**
  *
- * Utility methods
+ * Utility Functions
  *
  *
  */
 
 /**
  * Function, which creates the chart dictionary out of table structure.
+ * @param {classObject: LineChart | BarChart}: Class object of respective chart.
  * @returns {{[key: string]: number}}: Return dictionary of data points: key -> string, value -> number.
  */
 function getTableDict(
@@ -314,6 +315,7 @@ function getTableDict(
 
 /**
  * Function, which creates the chart dictionary out of data series.
+ * @param {classObject: LineChart | BarChart}: Class object of respective chart.
  * @returns [{{[key: string]: number}}, {{[key: string]: string}}]: Return 2 dictionaries:
  * 1. Data points: key -> string, value -> number.
  * 2. X and Y Axis names: key -> string, value -> string.
@@ -379,6 +381,7 @@ function getDictValues(dict: { [key: string]: number }): number[] {
 
 /**
  * Function setting the chart width.
+ * @param {classObject: LineChart | BarChart}: Class object of respective chart.
  * @returns {number}: Return width of chart. Default set to 500.
  */
 function setChartWidth(classObject): number {
@@ -395,6 +398,7 @@ function setChartWidth(classObject): number {
 
 /**
  * Function setting the chart height.
+ * @param {classObject: LineChart | BarChart}: Class object of respective chart.
  * @returns {number}: Return height of chart. Default set to 300.
  */
 function setChartHeight(classObject): number {
@@ -418,7 +422,9 @@ function isValidNumber(str: string): boolean {
   return !isNaN(parseFloat(str));
 }
 
-/** Function for drawing the chart in table mode. */
+/** Function for drawing the chart in table mode. 
+ * @param {classObject: LineChart | BarChart}: Class object of respective chart.
+*/
 function handleDataSeriesMode(classObject: LineChart | BarChart): void {
   try {
     const dictionaries = getDataSeriesDict(classObject);
@@ -439,6 +445,10 @@ function handleDataSeriesMode(classObject: LineChart | BarChart): void {
   }
 }
 
+/**
+ * Function checking if input is a valid number.
+ * @returns {number[]}: Return array of numbers: [0] -> height, [1] -> width.
+ */
 function handleCss(): number[] {
   const styleSheet = Array.from(document.styleSheets).find((sheet) =>
     sheet.href.includes('style.css')
@@ -451,8 +461,14 @@ function handleCss(): number[] {
     for (const rule of rules) {
       if (rule instanceof CSSStyleRule && rule.selectorText === '.chart1') {
         const styleDeclaration = rule.style;
-        const chartWidth: number = parseInt(styleDeclaration.getPropertyValue('--chart-width'), 10);
-        const chartHeight: number = parseInt(styleDeclaration.getPropertyValue('--chart-height'), 10);
+        const chartWidth: number = parseInt(
+          styleDeclaration.getPropertyValue('--chart-width'),
+          10
+        );
+        const chartHeight: number = parseInt(
+          styleDeclaration.getPropertyValue('--chart-height'),
+          10
+        );
         attributes.push(chartHeight);
         attributes.push(chartWidth);
       }
@@ -461,7 +477,9 @@ function handleCss(): number[] {
   return attributes;
 }
 
-/** Function for drawing the chart using data series. */
+/** Function for drawing the chart using data series.
+ * @param {classObject: LineChart | BarChart}: Class object of respective chart.
+ */
 function handleTableMode(classObject: LineChart | BarChart): void {
   try {
     const dictionaries = getTableDict(classObject);
