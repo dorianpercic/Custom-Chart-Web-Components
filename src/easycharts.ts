@@ -435,7 +435,6 @@ function handleDataSeriesMode(classObject: LineChart | BarChart): void {
       height = attributes[0];
       width = attributes[1];
     }
-    console.log(document.styleSheets);
 
     if (classObject instanceof BarChart) {
       (classObject as BarChart).drawBarChart(width, height, dictionaries);
@@ -461,14 +460,11 @@ function handleCss(classObject: LineChart | BarChart): number[] {
   if (styleSheet) {
     const rules = Array.from(styleSheet.cssRules);
     let classAttr = classObject.getAttribute('class');
-    console.log(`.${classAttr}`);
-
     for (const rule of rules) {
       if (
         rule instanceof CSSStyleRule &&
         rule.selectorText === `.${classAttr}`
       ) {
-        console.log(rule.selectorText);
         const styleDeclaration = rule.style;
         const chartWidth: number = parseInt(
           styleDeclaration.getPropertyValue('--chart-width'),
@@ -478,7 +474,6 @@ function handleCss(classObject: LineChart | BarChart): number[] {
           styleDeclaration.getPropertyValue('--chart-height'),
           10
         );
-        console.log('hi');
         attributes.push(chartHeight);
         attributes.push(chartWidth);
       }
