@@ -42,4 +42,4 @@ gulp.task('watchRollup', function () {
 gulp.task('default', gulp.series('d3-barchart', 'd3-linechart', rollup));
 
 // Watching changes, if detected -> reload rollup [npx gulp watch].
-gulp.task('watch', gulp.series('watchRollup'));
+gulp.task('watch', gulp.series('d3-barchart', 'd3-linechart', 'watchRollup'));

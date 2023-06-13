@@ -422,8 +422,12 @@ function isValidNumber(str: string): boolean {
 function handleDataSeriesMode(classObject: LineChart | BarChart): void {
   try {
     const dictionaries = getDataSeriesDict(classObject);
-    const width = setChartWidth(classObject);
-    const height = setChartHeight(classObject);
+    let width: number = setChartWidth(classObject);
+    let height: number = setChartHeight(classObject);
+    const attributes = handleCss();
+    height = attributes[0];
+    width = attributes[1];
+    console.log(document.styleSheets);
 
     if (classObject instanceof BarChart) {
       (classObject as BarChart).drawBarChart(width, height, dictionaries);
@@ -433,6 +437,28 @@ function handleDataSeriesMode(classObject: LineChart | BarChart): void {
   } catch (error) {
     console.error('[Error]', error.message);
   }
+}
+
+function handleCss(): number[] {
+  const styleSheet = Array.from(document.styleSheets).find((sheet) =>
+    sheet.href.includes('style.css')
+  ) as CSSStyleSheet;
+  let attributes: number[] = [];
+
+  if (styleSheet) {
+    const rules = Array.from(styleSheet.cssRules);
+
+    for (const rule of rules) {
+      if (rule instanceof CSSStyleRule && rule.selectorText === '.chart1') {
+        const styleDeclaration = rule.style;
+        const chartWidth: number = parseInt(styleDeclaration.getPropertyValue('--chart-width'), 10);
+        const chartHeight: number = parseInt(styleDeclaration.getPropertyValue('--chart-height'), 10);
+        attributes.push(chartHeight);
+        attributes.push(chartWidth);
+      }
+    }
+  }
+  return attributes;
 }
 
 /** Function for drawing the chart using data series. */
