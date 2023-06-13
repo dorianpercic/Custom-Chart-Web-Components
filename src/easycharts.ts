@@ -107,11 +107,11 @@ class BarChart extends HTMLElement {
 
     this.shadowRoot?.appendChild(barChartSvg.node());
 
-    // Adding CSS
+    /*
     let style = document.createElement('link');
     style.setAttribute('rel', 'stylesheet');
     style.setAttribute('href', '../css/style.css');
-    this.shadowRoot.append(style);
+    this.shadowRoot.append(style);*/
   }
 }
 
@@ -232,10 +232,10 @@ class LineChart extends HTMLElement {
 
     this.shadowRoot?.appendChild(lineChartSvg.node());
 
-    let style = document.createElement('link');
+    /*let style = document.createElement('link');
     style.setAttribute('rel', 'stylesheet');
-    style.setAttribute('href', '../css/style.css');
-    this.shadowRoot.append(style);
+    style.setAttribute('href', '../style.css');
+    this.shadowRoot.append(style);*/
   }
 }
 
