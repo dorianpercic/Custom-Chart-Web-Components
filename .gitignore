@@ -3,3 +3,4 @@ node_modules/*
 .prettierrc.json
 dist/
 .vscode
+TODO.txt

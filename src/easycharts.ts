@@ -18,7 +18,7 @@ class BarChart extends HTMLElement {
     } else if (this.querySelector('dataseries')) {
       handleDataSeriesMode(this);
     } else {
-      console.error('Invalid chart structure: No table or data series found');
+      console.error('[Error] Invalid chart structure: No table or data series found');
     }
   }
 
@@ -139,7 +139,7 @@ class LineChart extends HTMLElement {
     } else if (this.querySelector('dataseries')) {
       handleDataSeriesMode(this);
     } else {
-      console.error('Invalid chart structure: No table or data series found');
+      console.error('[Error] Invalid chart structure: No table or data series found');
     }
   }
 
@@ -488,8 +488,13 @@ function handleCss(classObject: LineChart | BarChart): number[] {
 function handleTableMode(classObject: LineChart | BarChart): void {
   try {
     const dictionaries = getTableDict(classObject);
-    const width = setChartWidth(classObject);
-    const height = setChartHeight(classObject);
+    let width = setChartWidth(classObject);
+    let height = setChartHeight(classObject);
+    const attributes = handleCss(classObject);
+    if (attributes.length !== 0) {
+      height = attributes[0];
+      width = attributes[1];
+    }
 
     if (classObject instanceof BarChart) {
       (classObject as BarChart).drawBarChart(width, height, dictionaries);
