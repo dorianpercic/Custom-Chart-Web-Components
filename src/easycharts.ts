@@ -422,17 +422,19 @@ function isValidNumber(str: string): boolean {
   return !isNaN(parseFloat(str));
 }
 
-/** Function for drawing the chart in table mode. 
+/** Function for drawing the chart in table mode.
  * @param {classObject: LineChart | BarChart}: Class object of respective chart.
-*/
+ */
 function handleDataSeriesMode(classObject: LineChart | BarChart): void {
   try {
     const dictionaries = getDataSeriesDict(classObject);
     let width: number = setChartWidth(classObject);
     let height: number = setChartHeight(classObject);
-    const attributes = handleCss();
-    height = attributes[0];
-    width = attributes[1];
+    const attributes = handleCss(classObject);
+    if (attributes.length !== 0) {
+      height = attributes[0];
+      width = attributes[1];
+    }
     console.log(document.styleSheets);
 
     if (classObject instanceof BarChart) {
@@ -447,9 +449,10 @@ function handleDataSeriesMode(classObject: LineChart | BarChart): void {
 
 /**
  * Function checking if input is a valid number.
+ * @param {classObject: LineChart | BarChart}: Class object of respective chart.
  * @returns {number[]}: Return array of numbers: [0] -> height, [1] -> width.
  */
-function handleCss(): number[] {
+function handleCss(classObject: LineChart | BarChart): number[] {
   const styleSheet = Array.from(document.styleSheets).find((sheet) =>
     sheet.href.includes('style.css')
   ) as CSSStyleSheet;
@@ -457,9 +460,15 @@ function handleCss(): number[] {
 
   if (styleSheet) {
     const rules = Array.from(styleSheet.cssRules);
+    let classAttr = classObject.getAttribute('class');
+    console.log(`.${classAttr}`);
 
     for (const rule of rules) {
-      if (rule instanceof CSSStyleRule && rule.selectorText === '.chart1') {
+      if (
+        rule instanceof CSSStyleRule &&
+        rule.selectorText === `.${classAttr}`
+      ) {
+        console.log(rule.selectorText);
         const styleDeclaration = rule.style;
         const chartWidth: number = parseInt(
           styleDeclaration.getPropertyValue('--chart-width'),
@@ -469,6 +478,7 @@ function handleCss(): number[] {
           styleDeclaration.getPropertyValue('--chart-height'),
           10
         );
+        console.log('hi');
         attributes.push(chartHeight);
         attributes.push(chartWidth);
       }
