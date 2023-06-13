@@ -13,12 +13,22 @@ class BarChart extends HTMLElement {
    * is attached to the DOM.
    */
   connectedCallback() {
+    let width = setChartWidth(this);
+    let height = setChartHeight(this);
+    const attributes = handleCss(this);
+    if (attributes.length !== 0) {
+      height = attributes[0];
+      width = attributes[1];
+    }
+
     if (this.querySelector('table')) {
-      handleTableMode(this);
+      handleTableMode(this, width, height);
     } else if (this.querySelector('dataseries')) {
-      handleDataSeriesMode(this);
+      handleDataSeriesMode(this, width, height);
     } else {
-      console.error('[Error] Invalid chart structure: No table or data series found');
+      console.error(
+        '[Error] Invalid chart structure: No table or data series found'
+      );
     }
   }
 
@@ -134,12 +144,22 @@ class LineChart extends HTMLElement {
    * is attached to the DOM.
    */
   connectedCallback() {
+    let width = setChartWidth(this);
+    let height = setChartHeight(this);
+    const attributes = handleCss(this);
+    if (attributes.length !== 0) {
+      height = attributes[0];
+      width = attributes[1];
+    }
+
     if (this.querySelector('table')) {
-      handleTableMode(this);
+      handleTableMode(this, width, height);
     } else if (this.querySelector('dataseries')) {
-      handleDataSeriesMode(this);
+      handleDataSeriesMode(this, width, height);
     } else {
-      console.error('[Error] Invalid chart structure: No table or data series found');
+      console.error(
+        '[Error] Invalid chart structure: No table or data series found'
+      );
     }
   }
 
@@ -425,21 +445,26 @@ function isValidNumber(str: string): boolean {
 /** Function for drawing the chart in table mode.
  * @param {classObject: LineChart | BarChart}: Class object of respective chart.
  */
-function handleDataSeriesMode(classObject: LineChart | BarChart): void {
+function handleDataSeriesMode(
+  classObject: LineChart | BarChart,
+  chartWidth: number,
+  chartHeight: number
+): void {
   try {
     const dictionaries = getDataSeriesDict(classObject);
-    let width: number = setChartWidth(classObject);
-    let height: number = setChartHeight(classObject);
-    const attributes = handleCss(classObject);
-    if (attributes.length !== 0) {
-      height = attributes[0];
-      width = attributes[1];
-    }
 
     if (classObject instanceof BarChart) {
-      (classObject as BarChart).drawBarChart(width, height, dictionaries);
+      (classObject as BarChart).drawBarChart(
+        chartWidth,
+        chartHeight,
+        dictionaries
+      );
     } else if (classObject instanceof LineChart) {
-      (classObject as LineChart).drawLineChart(width, height, dictionaries);
+      (classObject as LineChart).drawLineChart(
+        chartWidth,
+        chartHeight,
+        dictionaries
+      );
     }
   } catch (error) {
     console.error('[Error]', error.message);
@@ -485,21 +510,26 @@ function handleCss(classObject: LineChart | BarChart): number[] {
 /** Function for drawing the chart using data series.
  * @param {classObject: LineChart | BarChart}: Class object of respective chart.
  */
-function handleTableMode(classObject: LineChart | BarChart): void {
+function handleTableMode(
+  classObject: LineChart | BarChart,
+  chartWidth: number,
+  chartHeight: number
+): void {
   try {
     const dictionaries = getTableDict(classObject);
-    let width = setChartWidth(classObject);
-    let height = setChartHeight(classObject);
-    const attributes = handleCss(classObject);
-    if (attributes.length !== 0) {
-      height = attributes[0];
-      width = attributes[1];
-    }
 
     if (classObject instanceof BarChart) {
-      (classObject as BarChart).drawBarChart(width, height, dictionaries);
+      (classObject as BarChart).drawBarChart(
+        chartWidth,
+        chartHeight,
+        dictionaries
+      );
     } else if (classObject instanceof LineChart) {
-      (classObject as LineChart).drawLineChart(width, height, dictionaries);
+      (classObject as LineChart).drawLineChart(
+        chartWidth,
+        chartHeight,
+        dictionaries
+      );
     }
   } catch (error) {
     console.error('[Error]', error.message);
