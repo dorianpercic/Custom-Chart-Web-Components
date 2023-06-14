@@ -1,5 +1,4 @@
 const gulp = require('gulp');
-const path = require('path');
 const { exec } = require('child_process');
 
 let Command = {
@@ -19,15 +18,11 @@ let Command = {
 };
 
 gulp.task('d3-barchart', async function () {
-  return gulp
-    .src(path.join('src', 'libs', 'd3.min.js'))
-    .pipe(gulp.dest(path.join('dist', 'barchart', 'libs')));
+  return gulp.src('src/libs/d3.min.js').pipe(gulp.dest('dist/barchart/libs'));
 });
 
 gulp.task('d3-linechart', async function () {
-  return gulp
-    .src(path.join('src', 'libs', 'd3.min.js'))
-    .pipe(gulp.dest(path.join('dist', 'linechart', 'libs')));
+  return gulp.src('src/libs/d3.min.js').pipe(gulp.dest('dist/linechart/libs'));
 });
 
 gulp.task('linechart-examples', async function () {
@@ -38,8 +33,8 @@ gulp.task('linechart-examples', async function () {
 
 /*gulp.task('barchart-css', function () {
   return gulp
-    .src(path.join('src', 'css', 'style.css'))
-    .pipe(gulp.dest(path.join('dist', 'barchart', 'esm', 'examples', 'css')));
+    .src('src/css/style.css')    
+    .pipe(gulp.dest('dist/barchart/esm/examples/css'));
 });*/
 
 gulp.task('barchart-html-examples', async function () {
@@ -50,8 +45,8 @@ gulp.task('barchart-html-examples', async function () {
 
 /*gulp.task('linechart-css', function () {
   return gulp
-    .src(path.join('src', 'css', 'style.css'))
-    .pipe(gulp.dest(path.join('dist', 'linechart', 'esm', 'examples', 'css')));
+    .src('src/css/style.css')    
+    .pipe(gulp.dest('dist/linechart/esm/examples/css'));
 });*/
 
 gulp.task('linechart-html-examples', async function () {
