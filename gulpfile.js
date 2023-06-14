@@ -30,6 +30,36 @@ gulp.task('d3-linechart', async function () {
     .pipe(gulp.dest(path.join('dist', 'linechart', 'libs')));
 });
 
+gulp.task('linechart-examples', async function () {
+  return gulp
+    .src(path.join('src', 'html', 'linechart-dataseries.html'))
+    .pipe(gulp.dest(path.join('dist', 'linechart', 'esm', 'examples')));
+});
+
+gulp.task('barchart-css', function () {
+  return gulp
+    .src(path.join('src', 'css', 'style.css'))
+    .pipe(gulp.dest(path.join('dist', 'barchart', 'esm', 'examples', 'css')));
+});
+
+gulp.task('barchart-html-examples', async function () {
+  return gulp
+    .src(path.join('src', 'html', 'barchart-table.html'))
+    .pipe(gulp.dest(path.join('dist', 'barchart', 'esm', 'examples', 'html')));
+});
+
+gulp.task('linechart-css', function () {
+  return gulp
+    .src(path.join('src', 'css', 'style.css'))
+    .pipe(gulp.dest(path.join('dist', 'linechart', 'esm', 'examples', 'css')));
+});
+
+gulp.task('linechart-html-examples', async function () {
+  return gulp
+    .src(path.join('src', 'html', 'linechart-dataseries.html'))
+    .pipe(gulp.dest(path.join('dist', 'linechart', 'esm', 'examples', 'html')));
+});
+
 function rollup() {
   return Command.execute('rollup -c');
 }
@@ -38,8 +68,28 @@ gulp.task('watchRollup', function () {
   gulp.watch('src/**/*', gulp.series(rollup));
 });
 
-// Default gulp task [npx gulp].
-gulp.task('default', gulp.series('d3-barchart', 'd3-linechart', rollup));
+// Default gulp task [npx gulp]
+gulp.task(
+  'default',
+  gulp.series(
+    'd3-barchart',
+    'd3-linechart',
+    'barchart-html-examples',
+    'barchart-css',
+    'linechart-html-examples',
+    'linechart-css',
+    rollup
+  )
+);
 
-// Watching changes, if detected -> reload rollup [npx gulp watch].
-gulp.task('watch', gulp.series('d3-barchart', 'd3-linechart', 'watchRollup'));
+// Watching changes, if detected -> reload rollup [npx gulp watch]
+gulp.task(
+  'watch',
+  gulp.series(
+    'd3-barchart',
+    'd3-linechart',
+    'barchart-html-examples',
+    'linechart-examples',
+    'watchRollup'
+  )
+);
