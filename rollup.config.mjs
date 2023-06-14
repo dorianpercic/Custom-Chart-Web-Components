@@ -3,17 +3,17 @@ import path from 'path';
 
 export default [
   {
-    input: [path.join('src', 'easycharts.ts')],
+    input: ['src/easycharts.ts'],
     output: {
-      dir: path.join('dist', 'linechart', 'esm'),
+      dir: 'dist/linechart/esm',
       format: 'esm',
     },
     plugins: [typescript()],
   },
   {
-    input: [path.join('src', 'easycharts.ts')],
+    input: ['src/easycharts.ts'],
     output: {
-      dir: path.join('dist', 'barchart', 'esm'),
+      dir: 'dist/barchart/esm',
       format: 'esm',
     },
     plugins: [typescript()],
