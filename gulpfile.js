@@ -36,11 +36,11 @@ gulp.task('linechart-examples', async function () {
     .pipe(gulp.dest(path.join('dist', 'linechart', 'esm', 'examples')));
 });
 
-gulp.task('barchart-css', function () {
+/*gulp.task('barchart-css', function () {
   return gulp
     .src(path.join('src', 'css', 'style.css'))
     .pipe(gulp.dest(path.join('dist', 'barchart', 'esm', 'examples', 'css')));
-});
+});*/
 
 gulp.task('barchart-html-examples', async function () {
   return gulp
@@ -48,11 +48,11 @@ gulp.task('barchart-html-examples', async function () {
     .pipe(gulp.dest(path.join('dist', 'barchart', 'esm', 'examples', 'html')));
 });
 
-gulp.task('linechart-css', function () {
+/*gulp.task('linechart-css', function () {
   return gulp
     .src(path.join('src', 'css', 'style.css'))
     .pipe(gulp.dest(path.join('dist', 'linechart', 'esm', 'examples', 'css')));
-});
+});*/
 
 gulp.task('linechart-html-examples', async function () {
   return gulp
@@ -75,9 +75,7 @@ gulp.task(
     'd3-barchart',
     'd3-linechart',
     'barchart-html-examples',
-    'barchart-css',
     'linechart-html-examples',
-    'linechart-css',
     rollup
   )
 );

@@ -477,11 +477,10 @@ function handleDataSeriesMode(
  * @returns {number[]}: Return array of numbers: [0] -> height, [1] -> width.
  */
 function handleCss(classObject: LineChart | BarChart): number[] {
-  const styleSheet = Array.from(document.styleSheets).find((sheet) =>
-    sheet.href.includes('style.css')
+  const styleSheet = Array.from(document.styleSheets).find(
+    (sheet) => sheet.ownerNode instanceof HTMLStyleElement
   ) as CSSStyleSheet;
   let attributes: number[] = [];
-
   if (styleSheet) {
     const rules = Array.from(styleSheet.cssRules);
     let classAttr = classObject.getAttribute('class');

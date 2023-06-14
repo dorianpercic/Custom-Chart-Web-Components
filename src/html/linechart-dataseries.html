@@ -4,10 +4,14 @@
     <meta charset="utf-8" />
     <title>Web components Testing Environment</title>
     <script src="../../../libs/d3.min.js"></script>
-    <script type="module">
-      import * as lc from "../../easycharts.js"
-    </script>
-    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <script src="../../easycharts.js" defer></script>
+    <style>
+      /* Place your CSS styles here */
+      .chart1 {
+        --chart-width: 500;
+        --chart-height: 300;
+      }
+    </style>
   </head>
 
   <body>
