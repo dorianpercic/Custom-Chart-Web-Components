@@ -1,4 +1,13 @@
-import * as d3 from 'd3';
+import {
+  scaleBand,
+  scaleLinear,
+  scalePoint,
+  axisBottom,
+  axisLeft,
+  create,
+  max,
+  line,
+} from 'd3';
 
 /** Class for bar chart web component. */
 class BarChart extends HTMLElement {
@@ -55,36 +64,29 @@ class BarChart extends HTMLElement {
       left: width * 0.2,
       right: width * 0.2,
     };
-    d3.create('svg');
     const dataDict = dictionaries[0];
     const headers = dictionaries[1];
-    let key = '';
-    for (var firstKey in dataDict) {
-      key = firstKey;
-      break;
-    }
-    const dataArray = getDictValues(dataDict[key]);
+    const dataSeriesKey = Object.keys(dataDict)[0];
+    const dataArray = getDictValues(dataDict[dataSeriesKey]);
 
     console.log(dataArray);
     const chartWidth = width - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;
 
-    const barChartSvg = d3
-      .create('svg')
+    const barChartSvg = create('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('version', '1.1');
 
-    const xScale = d3.scaleBand().range([0, chartWidth]).padding(0.1);
+    const xScale = scaleBand().range([0, chartWidth]).padding(0.1);
 
-    xScale.domain(Object.keys(dataDict[key]));
+    xScale.domain(Object.keys(dataDict[dataSeriesKey]));
 
-    const yScale = d3
-      .scaleLinear()
-      .domain([0, d3.max(dataArray) || 0])
+    const yScale = scaleLinear()
+      .domain([0, max(dataArray) || 0])
       .range([chartHeight, 0]);
 
-    const xAxis = d3.axisBottom(xScale);
-    const yAxis = d3.axisLeft(yScale).ticks(5);
+    const xAxis = axisBottom(xScale);
+    const yAxis = axisLeft(yScale).ticks(5);
 
     barChartSvg
       .append('g')
@@ -101,7 +103,10 @@ class BarChart extends HTMLElement {
       .selectAll('rect')
       .data(dataArray)
       .join('rect')
-      .attr('x', (_, i) => margin.left + xScale(Object.keys(dataDict[key])[i]))
+      .attr(
+        'x',
+        (_, i) => margin.left + xScale(Object.keys(dataDict[dataSeriesKey])[i])
+      )
       .attr('y', (d) => margin.top + yScale(d))
       .attr('width', xScale.bandwidth())
       .attr('height', (d) => chartHeight - yScale(d))
@@ -114,7 +119,7 @@ class BarChart extends HTMLElement {
       .attr('text-anchor', 'end')
       .attr('x', width - margin.right)
       .attr('y', height - margin.bottom + 40)
-      .text(headers['y-axis']);
+      .text(headers['x-axis']);
 
     // Y-Axis
     barChartSvg
@@ -125,7 +130,7 @@ class BarChart extends HTMLElement {
       .attr('y', margin.left - 60)
       .attr('dy', '.75em')
       .attr('transform', 'rotate(-90)')
-      .text(headers['x-axis']);
+      .text(headers['y-axis']);
 
     this.shadowRoot?.appendChild(barChartSvg.node());
     /*
@@ -138,6 +143,12 @@ class BarChart extends HTMLElement {
 
 // Define the custom element "bar-chart"
 customElements.define('ec-barchart', BarChart);
+
+/** Custom type for defining datapoints for linechart */
+type dataPoint = {
+  x: string;
+  y: number;
+};
 
 /** Class for line chart web component. */
 class LineChart extends HTMLElement {
@@ -181,6 +192,7 @@ class LineChart extends HTMLElement {
    * @param [{{[key: string]: number}}, {{[key: string]: string}}] dataDict: 2 dictionaries, 1 consisting of datapoints
    * and the other of the x and y axis headers.
    */
+
   drawLineChart(
     width: number,
     height: number,
@@ -195,50 +207,52 @@ class LineChart extends HTMLElement {
       left: width * 0.2,
       right: width * 0.2,
     };
-    /*const dataDict = dictionaries[0];
+    const data = dictionaries[0];
     const headers = dictionaries[1];
 
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+    const xScale = scalePoint()
+      .domain(
+        Object.keys(data).reduce((labels, seriesKey) => {
+          const seriesLabels = Object.keys(data[seriesKey]);
+          return [...labels, ...seriesLabels];
+        }, [])
+      )
+      .range([margin.left, width - margin.right]);
 
-    const data = Object.entries(dataDict).map(([key, value]) => ({
-      date: key,
-      value: value,
-    }));
+    const yScale = scaleLinear()
+      .domain([
+        0,
+        max(Object.values(data).map((line) => max(Object.values(line)))),
+      ])
+      .range([height - margin.bottom, margin.top]);
 
-    const x = d3
-      .scalePoint()
-      .range([0, innerWidth])
-      .domain(data.map((d) => d.date));
+    const lineChartSvg = create('svg')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('version', '1.1');
 
-    const y = d3
-      .scaleLinear()
-      .range([innerHeight, 0])
-      .domain([0, d3.max(data, (d) => d.value)]);
+    const lineGenerator = line<{ x: string; y: number }>()
+      .x((d) => xScale(d.x) || 0)
+      .y((d) => yScale(d.y) || 0);
+    Object.entries(data).forEach(([key, lineData]) => {
+      lineChartSvg
+        .append('path')
+        .datum(Object.entries(lineData).map(([x, y]) => ({ x, y })))
+        .attr('d', lineGenerator)
+        .attr('fill', 'none')
+        .attr('stroke', 'steelblue');
+    });
 
-    const line = d3
-      .line<{ date: string; value: number }>()
-      .x((d) => x(d.date)!)
-      .y((d) => y(d.value));
-
-    const lineChartSvg = d3
-      .create('svg')
-      .attr('width', width)
-      .attr('height', height);
-
-    const g = lineChartSvg
+    lineChartSvg
       .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
+      .attr('transform', `translate(0, ${height - margin.bottom})`)
+      .call(axisBottom(xScale));
 
-    g.append('path')
-      .datum(data)
-      .attr('class', 'line')
-      .attr('fill', 'none')
-      .attr('stroke', 'steelblue')
-      .attr('stroke-width', 1.5)
-      .attr('d', line);
+    lineChartSvg
+      .append('g')
+      .attr('transform', `translate(${margin.left}, 0)`)
+      .call(axisLeft(yScale));
 
-    //x label
+    // x label
     lineChartSvg
       .append('text')
       .attr('class', 'x-label')
@@ -247,7 +261,7 @@ class LineChart extends HTMLElement {
       .attr('y', height - margin.bottom + 40)
       .text(headers['x-axis']);
 
-    //y label
+    // y label
     lineChartSvg
       .append('text')
       .attr('class', 'y-label')
@@ -258,21 +272,9 @@ class LineChart extends HTMLElement {
       .attr('transform', 'rotate(-90)')
       .text(headers['y-axis']);
 
-    g.append('g')
-      .attr('transform', `translate(0,${innerHeight})`)
-      .call(d3.axisBottom(x));
-
-    g.append('g').call(d3.axisLeft(y));
-
     this.shadowRoot?.appendChild(lineChartSvg.node());
-    */
-    /*let style = document.createElement('link');
-    style.setAttribute('rel', 'stylesheet');
-    style.setAttribute('href', '../style.css');
-    this.shadowRoot.append(style);*/
   }
 }
-
 // Define the custom element "line-chart"
 customElements.define('ec-linechart', LineChart);
 
@@ -290,36 +292,53 @@ customElements.define('ec-linechart', LineChart);
  */
 function getTableDict(
   classObject: LineChart | BarChart
-): [{ [key: string]: number }, { [key: string]: string }] {
+): [
+  { [key: string]: { [innerKey: string]: number } },
+  { [key: string]: string }
+] {
   const tableElement = classObject.querySelector('table');
 
   if (!tableElement) {
     throw new Error('<table> element not found');
   }
+
+  // Set x and y axis using thead
   let xAxisName: any = 'x-Axis';
   let yAxisName: any = 'y-Axis';
-
-  const xAxisQuerySelector = classObject.querySelector('thead');
-  xAxisName =
-    xAxisQuerySelector && xAxisQuerySelector.innerHTML !== ''
-      ? xAxisQuerySelector.innerHTML
-      : xAxisName;
-  const yAxisQuerySelector = classObject.querySelector('y-header');
-  yAxisName =
-    yAxisQuerySelector && yAxisQuerySelector.innerHTML !== ''
-      ? yAxisQuerySelector.innerHTML
-      : yAxisName;
   let headerDict: { [key: string]: string } = {
-    'x-axis': 'x-axis',
-    'y-axis': 'y-axis',
+    'x-axis': xAxisName,
+    'y-axis': yAxisName,
   };
+  const axisTitleQuerySelector = classObject.querySelector('thead');
+  if (axisTitleQuerySelector) {
+    const trElement = axisTitleQuerySelector.querySelectorAll('tr');
+    if (trElement) {
+      let thElement = trElement[0].querySelectorAll('th');
+      console.log(thElement);
+      thElement.forEach((value, i) => {
+        if (thElement) {
+          switch (i) {
+            case 0: {
+              xAxisName = value.textContent?.trim();
+              break;
+            }
+            case 1:
+              yAxisName = value.textContent?.trim();
+              break;
+          }
+        }
+      });
+    }
+  }
+
   headerDict['x-axis'] = xAxisName;
   headerDict['y-axis'] = yAxisName;
 
-  const tableRows = Array.from(tableElement.querySelectorAll('tr'));
+  const body = tableElement.querySelector('tbody');
+  const tableRows = body.querySelectorAll('tr');
 
-  let dataDict: { [key: string]: number } = {};
-
+  let dataDict: { [key: string]: { [innerKey: string]: number } } = {};
+  let tempDict: { [innerKey: string]: number } = {};
   tableRows.forEach((row: any) => {
     const cells = Array.from(row.querySelectorAll('td'));
     if (cells.length < 2) {
@@ -341,8 +360,11 @@ function getTableDict(
       );
     }
 
-    dataDict[key] = parseFloat(value);
+    tempDict[key] = parseFloat(value);
   });
+  // Setting dummy dataseries name,
+  // because in table mode only single data series possible
+  dataDict['dataseries1'] = tempDict;
 
   return [dataDict, headerDict];
 }
@@ -361,19 +383,19 @@ function getDataSeriesDict(
   { [key: string]: string }
 ] {
   const dataSeriesElement = classObject.querySelectorAll('dataseries');
-  let xAxisName: any = 'x-Axis';
-  let yAxisName: any = 'y-Axis';
 
   if (!dataSeriesElement) {
     throw new Error('<dataseries> element not found');
   }
   // Set x and y axis
-  const xAxisQuerySelector = classObject.querySelector('x-header');
+  let xAxisName: string = 'x-Axis';
+  let yAxisName: string = 'y-Axis';
+  const xAxisQuerySelector = classObject.querySelector('x-axis-title');
   xAxisName =
     xAxisQuerySelector && xAxisQuerySelector.innerHTML !== ''
       ? xAxisQuerySelector.innerHTML
       : xAxisName;
-  const yAxisQuerySelector = classObject.querySelector('y-header');
+  const yAxisQuerySelector = classObject.querySelector('y-axis-title');
   yAxisName =
     yAxisQuerySelector && yAxisQuerySelector.innerHTML !== ''
       ? yAxisQuerySelector.innerHTML
@@ -385,7 +407,6 @@ function getDataSeriesDict(
   headerDict['x-axis'] = xAxisName;
   headerDict['y-axis'] = yAxisName;
   let dataDict: { [key: string]: { [innerKey: string]: number } } = {};
-  console.log(dataSeriesElement);
 
   dataSeriesElement.forEach(function (value) {
     const dataPointElements = value.querySelectorAll('datapoint');
@@ -469,7 +490,7 @@ function isValidNumber(str: string): boolean {
   return !isNaN(parseFloat(str));
 }
 
-/** Function for drawing the chart in table mode.
+/** Function for drawing the chart in dataseries mode.
  * @param {classObject: LineChart | BarChart}: Class object of respective chart.
  */
 function handleDataSeriesMode(
@@ -533,7 +554,7 @@ function handleCss(classObject: LineChart | BarChart): number[] {
   return attributes;
 }
 
-/** Function for drawing the chart using data series.
+/** Function for drawing the chart using HTML table.
  * @param {classObject: LineChart | BarChart}: Class object of respective chart.
  */
 function handleTableMode(
@@ -541,7 +562,7 @@ function handleTableMode(
   chartWidth: number,
   chartHeight: number
 ): void {
-  /*try {
+  try {
     const dictionaries = getTableDict(classObject);
 
     if (classObject instanceof BarChart) {
@@ -559,5 +580,5 @@ function handleTableMode(
     }
   } catch (error) {
     console.error('[Error]', error.message);
-  }*/
+  }
 }

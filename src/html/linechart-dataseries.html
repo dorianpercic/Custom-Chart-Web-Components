@@ -2,12 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Web components Testing Environment</title>
-    <script src="../../../libs/d3.min.js"></script>
+    <title>Line Chart</title>
     <script src="../../easycharts.js" defer></script>
     <style>
       /* Place your CSS styles here */
-      .chart1 {
+      .linechart1 {
         --chart-width: 500;
         --chart-height: 300;
       }
@@ -16,18 +15,16 @@
 
   <body>
     <h1>Line Chart Example</h1>
-    <ec-linechart class="chart1">
-      <x-header>NewX</x-header>
-      <dataseries>
-        <datapoint> A,2 </datapoint>
-        <datapoint> B,20 </datapoint>
-        <datapoint> C,3 </datapoint>
-        <datapoint> D,40 </datapoint>
-        <datapoint> E,5 </datapoint>
-        <datapoint> F,60 </datapoint>
-        <datapoint> G,7 </datapoint>
-        <datapoint> H,80 </datapoint>
-        <datapoint> I,9 </datapoint>
+    <ec-linechart class="linechart1">
+      <x-axis-title>Year</x-axis-title>
+      <y-axis-title>Population in Million</y-axis-title>
+      <dataseries name="dataseries1">
+        <datapoint> 1960,3.03 </datapoint>
+        <datapoint> 1970,3.7 </datapoint>
+        <datapoint> 1980,4.43 </datapoint>
+        <datapoint> 1990,5.28 </datapoint>
+        <datapoint> 2000,6.08 </datapoint>
+        <datapoint> 2010,6.87 </datapoint>
       </dataseries>
     </ec-linechart>
   </body>

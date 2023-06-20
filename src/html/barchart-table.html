@@ -2,12 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Web components Testing Environment</title>
-    <script src="../../../libs/d3.min.js"></script>
+    <title>Bar Chart</title>
     <script src="../../easycharts.js" defer></script>
     <style>
       /* Place your CSS styles here */
-      .chart1 {
+      .barchart1 {
         --chart-width: 500;
         --chart-height: 300;
       }
@@ -16,13 +15,45 @@
 
   <body>
     <h1>Bar Chart Example</h1>
-    <ec-barchart>
-      <x-header>NewX</x-header>
-      <dataseries name="name">
-        <datapoint> A,2 </datapoint>
-        <datapoint> B,20 </datapoint>
-        <datapoint> C,3 </datapoint>
-      </dataseries>
+    <ec-barchart class="barchart1">
+      <table>
+        <thead>
+          <tr>
+            <th>Party</th>
+            <th>Percent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SPÖ</td>
+            <td>29.29</td>
+          </tr>
+          <tr>
+            <td>ÖVP</td>
+            <td>28.45</td>
+          </tr>
+          <tr>
+            <td>FPÖ</td>
+            <td>26.76</td>
+          </tr>
+          <tr>
+            <td>Grüne</td>
+            <td>6.68</td>
+          </tr>
+          <tr>
+            <td>KPÖ</td>
+            <td>4.22</td>
+          </tr>
+          <tr>
+            <td>Neos</td>
+            <td>2.64</td>
+          </tr>
+          <tr>
+            <td>Frank</td>
+            <td>1.74</td>
+          </tr>
+        </tbody>
+      </table>
     </ec-barchart>
   </body>
 </html>
