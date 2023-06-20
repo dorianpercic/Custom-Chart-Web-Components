@@ -16,24 +16,13 @@
 
   <body>
     <h1>Bar Chart Example</h1>
-    <ec-barchart class="chart1">
-      <table>
-        <thead></thead>
-        <tbody>
-          <tr>
-            <td>ÖVP</td>
-            <td>22</td>
-          </tr>
-          <tr>
-            <td>SPÖ</td>
-            <td>22</td>
-          </tr>
-          <tr>
-            <td>FPÖ</td>
-            <td>22</td>
-          </tr>
-        </tbody>
-      </table>
+    <ec-barchart>
+      <x-header>NewX</x-header>
+      <dataseries name="name">
+        <datapoint> A,2 </datapoint>
+        <datapoint> B,20 </datapoint>
+        <datapoint> C,3 </datapoint>
+      </dataseries>
     </ec-barchart>
   </body>
 </html>

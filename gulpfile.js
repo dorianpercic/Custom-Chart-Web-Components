@@ -1,5 +1,5 @@
-const gulp = require('gulp');
-const { exec } = require('child_process');
+import gulp from 'gulp';
+import { exec } from 'child_process';
 
 let Command = {
   execute: (command) => {
@@ -59,6 +59,10 @@ function rollup() {
   return Command.execute('rollup -c');
 }
 
+function serve() {
+  return Command.execute('npm run serve');
+}
+
 gulp.task('watchRollup', function () {
   gulp.watch('src/**/*', gulp.series(rollup));
 });
@@ -71,7 +75,8 @@ gulp.task(
     'd3-linechart',
     'barchart-html-examples',
     'linechart-html-examples',
-    rollup
+    rollup,
+    serve
   )
 );
 

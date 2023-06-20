@@ -1,3 +1,5 @@
+import * as d3 from 'd3';
+
 /** Class for bar chart web component. */
 class BarChart extends HTMLElement {
   /**
@@ -42,7 +44,10 @@ class BarChart extends HTMLElement {
   drawBarChart(
     width: number,
     height: number,
-    dictionaries: [{ [key: string]: number }, { [key: string]: string }]
+    dictionaries: [
+      { [key: string]: { [innerKey: string]: number } },
+      { [key: string]: string }
+    ]
   ): void {
     const margin = {
       top: height * 0.2,
@@ -50,10 +55,17 @@ class BarChart extends HTMLElement {
       left: width * 0.2,
       right: width * 0.2,
     };
+    d3.create('svg');
     const dataDict = dictionaries[0];
     const headers = dictionaries[1];
-    const dataArray = getDictValues(dataDict);
+    let key = '';
+    for (var firstKey in dataDict) {
+      key = firstKey;
+      break;
+    }
+    const dataArray = getDictValues(dataDict[key]);
 
+    console.log(dataArray);
     const chartWidth = width - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;
 
@@ -64,7 +76,7 @@ class BarChart extends HTMLElement {
 
     const xScale = d3.scaleBand().range([0, chartWidth]).padding(0.1);
 
-    xScale.domain(Object.keys(dataDict));
+    xScale.domain(Object.keys(dataDict[key]));
 
     const yScale = d3
       .scaleLinear()
@@ -89,7 +101,7 @@ class BarChart extends HTMLElement {
       .selectAll('rect')
       .data(dataArray)
       .join('rect')
-      .attr('x', (_, i) => margin.left + xScale(Object.keys(dataDict)[i]))
+      .attr('x', (_, i) => margin.left + xScale(Object.keys(dataDict[key])[i]))
       .attr('y', (d) => margin.top + yScale(d))
       .attr('width', xScale.bandwidth())
       .attr('height', (d) => chartHeight - yScale(d))
@@ -116,7 +128,6 @@ class BarChart extends HTMLElement {
       .text(headers['x-axis']);
 
     this.shadowRoot?.appendChild(barChartSvg.node());
-
     /*
     let style = document.createElement('link');
     style.setAttribute('rel', 'stylesheet');
@@ -173,7 +184,10 @@ class LineChart extends HTMLElement {
   drawLineChart(
     width: number,
     height: number,
-    dictionaries: [{ [key: string]: number }, { [key: string]: string }]
+    dictionaries: [
+      { [key: string]: { [innerKey: string]: number } },
+      { [key: string]: string }
+    ]
   ): void {
     const margin = {
       top: height * 0.2,
@@ -181,7 +195,7 @@ class LineChart extends HTMLElement {
       left: width * 0.2,
       right: width * 0.2,
     };
-    const dataDict = dictionaries[0];
+    /*const dataDict = dictionaries[0];
     const headers = dictionaries[1];
 
     const innerWidth = width - margin.left - margin.right;
@@ -251,7 +265,7 @@ class LineChart extends HTMLElement {
     g.append('g').call(d3.axisLeft(y));
 
     this.shadowRoot?.appendChild(lineChartSvg.node());
-
+    */
     /*let style = document.createElement('link');
     style.setAttribute('rel', 'stylesheet');
     style.setAttribute('href', '../style.css');
@@ -342,20 +356,18 @@ function getTableDict(
  */
 function getDataSeriesDict(
   classObject
-): [{ [key: string]: number }, { [key: string]: string }] {
-  const dataSeriesElement = classObject.querySelector('dataseries');
+): [
+  { [key: string]: { [innerKey: string]: number } },
+  { [key: string]: string }
+] {
+  const dataSeriesElement = classObject.querySelectorAll('dataseries');
   let xAxisName: any = 'x-Axis';
   let yAxisName: any = 'y-Axis';
 
   if (!dataSeriesElement) {
     throw new Error('<dataseries> element not found');
   }
-
-  const dataPointElements = dataSeriesElement.querySelectorAll('datapoint');
-  if (!dataPointElements.length) {
-    throw new Error('No <datapoint> elements found inside <dataseries>');
-  }
-
+  // Set x and y axis
   const xAxisQuerySelector = classObject.querySelector('x-header');
   xAxisName =
     xAxisQuerySelector && xAxisQuerySelector.innerHTML !== ''
@@ -372,21 +384,36 @@ function getDataSeriesDict(
   };
   headerDict['x-axis'] = xAxisName;
   headerDict['y-axis'] = yAxisName;
+  let dataDict: { [key: string]: { [innerKey: string]: number } } = {};
+  console.log(dataSeriesElement);
 
-  let dataDict: { [key: string]: number } = {};
-
-  dataPointElements.forEach((dataPoint) => {
-    let dataPointInnerHtml = dataPoint.innerHTML.replace(/\s/g, '');
-    let dataValues = dataPointInnerHtml.split(',');
-    if (!dataValues[1]) {
-      throw new Error(`<datapoint> value is missing`);
-    } else if (!isValidNumber(dataValues[1])) {
-      throw new Error(
-        `<datapoint> value ${dataValues[1]} is not a valid input for chart`
-      );
+  dataSeriesElement.forEach(function (value) {
+    const dataPointElements = value.querySelectorAll('datapoint');
+    console.log(dataSeriesElement);
+    let dataSeriesName: string = value.getAttribute('name');
+    if (!dataSeriesName) {
+      throw new Error('No "name" attribute in dataseries');
     }
-    dataDict[dataValues[0]] = parseFloat(dataValues[1]);
+    if (!dataPointElements.length) {
+      throw new Error('No <datapoint> elements found inside <dataseries>');
+    }
+    let dataPointsDict = {};
+    dataPointElements.forEach((dataPoint) => {
+      let dataPointInnerHtml = dataPoint.innerHTML.replace(/\s/g, '');
+      let dataValues = dataPointInnerHtml.split(',');
+      if (!dataValues[1]) {
+        throw new Error(`<datapoint> value is missing`);
+      } else if (!isValidNumber(dataValues[1])) {
+        throw new Error(
+          `<datapoint> value ${dataValues[1]} is not a valid input for chart`
+        );
+      }
+      dataPointsDict[dataValues[0]] = parseFloat(dataValues[1]);
+    });
+    dataDict[dataSeriesName] = dataPointsDict;
   });
+
+  console.log(dataDict);
   return [dataDict, headerDict];
 }
 
@@ -514,7 +541,7 @@ function handleTableMode(
   chartWidth: number,
   chartHeight: number
 ): void {
-  try {
+  /*try {
     const dictionaries = getTableDict(classObject);
 
     if (classObject instanceof BarChart) {
@@ -532,5 +559,5 @@ function handleTableMode(
     }
   } catch (error) {
     console.error('[Error]', error.message);
-  }
+  }*/
 }

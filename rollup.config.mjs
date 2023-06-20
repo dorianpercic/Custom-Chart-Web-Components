@@ -1,4 +1,5 @@
 import typescript from 'rollup-plugin-typescript2';
+import resolve from '@rollup/plugin-node-resolve';
 
 export default [
   {
@@ -7,7 +8,7 @@ export default [
       dir: 'dist/linechart/esm',
       format: 'esm',
     },
-    plugins: [typescript()],
+    plugins: [resolve(), typescript()],
   },
   {
     input: ['src/easycharts.ts'],
@@ -15,6 +16,9 @@ export default [
       dir: 'dist/barchart/esm',
       format: 'esm',
     },
-    plugins: [typescript()],
+    plugins: [
+      resolve(), // Resolves node_modules dependencies
+      typescript(), // Transpile TypeScript to JavaScript
+    ],
   },
 ];

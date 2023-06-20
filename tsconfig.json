@@ -1,8 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ES2022",
     "module": "ESNext",
     "outDir": "dist",
+    "esModuleInterop": true,
+    "declarationDir": "./types",
+    "declarationMap": true,
     "lib": ["es2017.object", "dom", "es2015"],
     "declaration": true
   },
