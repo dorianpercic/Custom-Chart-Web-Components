@@ -91,11 +91,13 @@ class BarChart extends HTMLElement {
     barChartSvg
       .append('g')
       .attr('transform', `translate(${margin.left}, ${height - margin.bottom})`)
+      .attr('id', 'x-axis')
       .call(xAxis);
 
     barChartSvg
       .append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
+      .attr('id', 'y-axis')
       .call(yAxis);
 
     barChartSvg
@@ -107,24 +109,28 @@ class BarChart extends HTMLElement {
         'x',
         (_, i) => margin.left + xScale(Object.keys(dataDict[dataSeriesKey])[i])
       )
+      .attr(
+        'id',
+        (_, i) => Object.keys(dataDict[dataSeriesKey])[i]
+      )
       .attr('y', (d) => margin.top + yScale(d))
       .attr('width', xScale.bandwidth())
       .attr('height', (d) => chartHeight - yScale(d))
       .attr('fill', 'red');
 
-    // X-Axis
+    // X-Label
     barChartSvg
       .append('text')
-      .attr('class', 'x-label')
+      .attr('id', 'x-label')
       .attr('text-anchor', 'end')
       .attr('x', width - margin.right)
       .attr('y', height - margin.bottom + 40)
       .text(headers['x-axis']);
 
-    // Y-Axis
+    // Y-Label
     barChartSvg
       .append('text')
-      .attr('class', 'y-label')
+      .attr('id', 'y-label')
       .attr('text-anchor', 'end')
       .attr('x', -margin.bottom)
       .attr('y', margin.left - 60)
@@ -239,23 +245,29 @@ class LineChart extends HTMLElement {
         .datum(Object.entries(lineData).map(([x, y]) => ({ x, y })))
         .attr('d', lineGenerator)
         .attr('fill', 'none')
-        .attr('stroke', 'steelblue');
+        .attr('stroke', 'steelblue')
+        .attr(
+          'id',
+          key
+        );
     });
 
     lineChartSvg
       .append('g')
       .attr('transform', `translate(0, ${height - margin.bottom})`)
+      .attr('id', 'x-axis')
       .call(axisBottom(xScale));
 
     lineChartSvg
       .append('g')
       .attr('transform', `translate(${margin.left}, 0)`)
+      .attr('id', 'y-axis')
       .call(axisLeft(yScale));
 
     // x label
     lineChartSvg
       .append('text')
-      .attr('class', 'x-label')
+      .attr('id', 'x-label')
       .attr('text-anchor', 'end')
       .attr('x', width - margin.right)
       .attr('y', height - margin.bottom + 40)
@@ -264,7 +276,7 @@ class LineChart extends HTMLElement {
     // y label
     lineChartSvg
       .append('text')
-      .attr('class', 'y-label')
+      .attr('id', 'y-label')
       .attr('text-anchor', 'end')
       .attr('x', -margin.bottom)
       .attr('y', margin.left - 60)
