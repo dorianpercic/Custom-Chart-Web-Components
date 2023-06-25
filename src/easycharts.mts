@@ -106,7 +106,7 @@ class BarChart extends HTMLElement {
     // Get bar colors through CSS
     //const colors = getBarColors(this);
     //["blue", "red", "green", "white", "black", "orange", "brown", "steelblue", "purple", "pink"]
-    
+
     // Append bars
     barChartSvg
       .append('g')
@@ -310,71 +310,50 @@ function getTableDict(
   if (!tableElement) {
     throw new Error('<table> element not found');
   }
+  let dataDict: { [key: string]: { [innerKey: string]: number } } = {};
 
-  // Set x and y axis using thead
-  let xAxisName: any = 'x-Axis';
-  let yAxisName: any = 'y-Axis';
-  let headerDict: { [key: string]: string } = {
-    'x-axis': xAxisName,
-    'y-axis': yAxisName,
-  };
-  const axisTitleQuerySelector = classObject.querySelector('thead');
-  if (axisTitleQuerySelector) {
-    const trElement = axisTitleQuerySelector.querySelectorAll('tr');
+  const theadQuerySelector = classObject.querySelector('thead');
+  if (theadQuerySelector) {
+    const trElement = theadQuerySelector.querySelector('tr');
     if (trElement) {
-      let thElement = trElement[0].querySelectorAll('th');
-      thElement.forEach((value, i) => {
-        if (thElement) {
-          switch (i) {
-            case 0: {
-              xAxisName = value.textContent?.trim();
-              break;
+      let thElements = trElement.querySelectorAll('th');
+      if (thElements) {
+        thElements.forEach((value, index1) => {
+          let tempDict: { [innerKey: string]: number } = {};
+          const body = tableElement.querySelector('tbody');
+          const tableRows = body.querySelectorAll('tr');
+          tableRows.forEach((row) => {
+            const cells = Array.from(row.querySelectorAll('td'));
+            if (cells && cells.length < 2) {
+              throw new Error(
+                'Invalid table structure: Each row must have at least two columns'
+              );
             }
-            case 1:
-              yAxisName = value.textContent?.trim();
-              break;
-          }
-        }
-      });
+            const key = (cells[0] as HTMLElement).textContent?.trim();
+
+            for (let i = 1; i < cells.length; ++i) {
+              let cell = cells[i];
+              const value = (cell as HTMLElement).textContent?.trim();
+              if (!key || !value)
+                throw new Error(
+                  'Invalid table structure: Each cell must have a value'
+                );
+
+              if (!isValidNumber(value))
+                throw new Error(
+                  `Invalid table structure: Value "${value}" is not a valid number`
+                );
+              if (index1 == i - 1) {
+                tempDict[key] = parseFloat(value);
+              }
+            }
+          });
+          dataDict[value.textContent?.trim()] = tempDict;
+        });
+      }
     }
   }
-
-  headerDict['x-axis'] = xAxisName;
-  headerDict['y-axis'] = yAxisName;
-
-  const body = tableElement.querySelector('tbody');
-  const tableRows = body.querySelectorAll('tr');
-
-  let dataDict: { [key: string]: { [innerKey: string]: number } } = {};
-  let tempDict: { [innerKey: string]: number } = {};
-  tableRows.forEach((row: any) => {
-    const cells = Array.from(row.querySelectorAll('td'));
-    if (cells.length < 2) {
-      throw new Error(
-        'Invalid table structure: Each row must have at least two cells'
-      );
-    }
-
-    const key = (cells[0] as HTMLElement).textContent?.trim();
-    const value = (cells[1] as HTMLElement).textContent?.trim();
-
-    if (!key || !value) {
-      throw new Error('Invalid table structure: Each cell must have a value');
-    }
-
-    if (!isValidNumber(value)) {
-      throw new Error(
-        `Invalid table structure: Value "${value}" is not a valid number`
-      );
-    }
-
-    tempDict[key] = parseFloat(value);
-  });
-  // Setting dummy dataseries name,
-  // because in table mode only single data series possible
-  dataDict['dataseries1'] = tempDict;
-
-  return [dataDict, headerDict];
+  return [dataDict, getAxisTitles(classObject)];
 }
 
 /**
@@ -395,25 +374,7 @@ function getDataSeriesDict(
   if (!dataSeriesElement) {
     throw new Error('<dataseries> element not found');
   }
-  // Set x and y axis
-  let xAxisName: string = 'x-Axis';
-  let yAxisName: string = 'y-Axis';
-  const xAxisQuerySelector = classObject.querySelector('x-axis-title');
-  xAxisName =
-    xAxisQuerySelector && xAxisQuerySelector.innerHTML !== ''
-      ? xAxisQuerySelector.innerHTML
-      : xAxisName;
-  const yAxisQuerySelector = classObject.querySelector('y-axis-title');
-  yAxisName =
-    yAxisQuerySelector && yAxisQuerySelector.innerHTML !== ''
-      ? yAxisQuerySelector.innerHTML
-      : yAxisName;
-  let headerDict: { [key: string]: string } = {
-    'x-axis': 'x-axis',
-    'y-axis': 'y-axis',
-  };
-  headerDict['x-axis'] = xAxisName;
-  headerDict['y-axis'] = yAxisName;
+
   let dataDict: { [key: string]: { [innerKey: string]: number } } = {};
 
   dataSeriesElement.forEach(function (value) {
@@ -440,7 +401,7 @@ function getDataSeriesDict(
     });
     dataDict[dataSeriesName] = dataPointsDict;
   });
-  return [dataDict, headerDict];
+  return [dataDict, getAxisTitles(classObject)];
 }
 
 /**
@@ -527,7 +488,7 @@ function handleDataSeriesMode(
 /**
  * Function checking if input is a valid number.
  * @param {classObject: LineChart | BarChart}: Class object of respective chart.
- * @returns {{[key: string]: number}}: Return size dictionarty of numbers: "height" -> int, "width" -> int.
+ * @returns {{[key: string]: number}}: Return size dictionary of numbers: "height" -> int, "width" -> int.
  */
 function getSizeFromCss(classObject: LineChart | BarChart): {
   [key: string]: number;
@@ -610,4 +571,33 @@ function handleTableMode(
   } catch (error) {
     console.error('[Error]', error.message);
   }
+}
+
+/** Function for drawing the chart using HTML table.
+ * @param {classObject: LineChart | BarChart}: Class object of respective chart.
+ * @returns {{[key:string]: string}} axisTitles: Dictionary of axis titles.
+ */
+function getAxisTitles(classObject: LineChart | BarChart): {
+  [key: string]: string;
+} {
+  // Set x and y axis
+  let xAxisName: string = 'x-Axis';
+  let yAxisName: string = 'y-Axis';
+  const xAxisQuerySelector = classObject.querySelector('x-axis-title');
+  xAxisName =
+    xAxisQuerySelector && xAxisQuerySelector.innerHTML !== ''
+      ? xAxisQuerySelector.innerHTML
+      : xAxisName;
+  const yAxisQuerySelector = classObject.querySelector('y-axis-title');
+  yAxisName =
+    yAxisQuerySelector && yAxisQuerySelector.innerHTML !== ''
+      ? yAxisQuerySelector.innerHTML
+      : yAxisName;
+  let axisTitles: { [key: string]: string } = {
+    'x-axis': 'x-axis',
+    'y-axis': 'y-axis',
+  };
+  axisTitles['x-axis'] = xAxisName;
+  axisTitles['y-axis'] = yAxisName;
+  return axisTitles;
 }

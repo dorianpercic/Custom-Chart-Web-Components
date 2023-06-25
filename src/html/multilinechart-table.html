@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Multiline Chart</title>
+    <script src="../../easycharts.js" defer></script>
+    <style>
+      /* Place your CSS styles here */
+      .mlinechart1 {
+        --chart-width: 500;
+        --chart-height: 300;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Multiline Chart Example[Table]</h1>
+    <ec-linechart class="mlinechart1">
+      <table>
+        <x-axis-title>Time</x-axis-title>
+        <y-axis-title>Profit in Thousands(€)</y-axis-title>
+        <thead>
+          <tr>
+            <th>Samsung</th>
+            <th>Apple</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>6AM</td>
+            <td>5</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td>12PM</td>
+            <td>10</td>
+            <td>15</td>
+          </tr>
+          <tr>
+            <td>6PM</td>
+            <td>15</td>
+            <td>20</td>
+          </tr>
+          <tr>
+            <td>12AM</td>
+            <td>1</td>
+            <td>5</td>
+          </tr>
+        </tbody>
+      </table>
+    </ec-linechart>
+  </body>
+</html>

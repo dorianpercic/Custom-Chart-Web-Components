@@ -40,6 +40,7 @@ gulp.task('linechart-html-examples', async function () {
     .src([
       'src/html/linechart-dataseries.html',
       'src/html/multilinechart-dataseries.html',
+      'src/html/multilinechart-table.html',
     ])
     .pipe(gulp.dest('dist/linechart/esm/examples/html'));
 });
