@@ -7,6 +7,7 @@ import {
   create,
   max,
   line,
+  color,
 } from 'd3';
 
 /** Class for bar chart web component. */
@@ -60,6 +61,7 @@ class BarChart extends HTMLElement {
     height: number,
     dictionaries: [
       { [key: string]: { [innerKey: string]: number } },
+      { [key: string]: string },
       { [key: string]: string }
     ]
   ): void {
@@ -71,7 +73,8 @@ class BarChart extends HTMLElement {
     };
     const dataDict = dictionaries[0];
     const headers = dictionaries[1];
-    const dataSeriesKey = Object.keys(dataDict)[0];
+    const colors = dictionaries[2];
+    const dataSeriesKey = Object.keys(dataDict)[0]; // Only one dataseries possible for bar chart 
     const dataArray = getDictValues(dataDict[dataSeriesKey]);
 
     const chartWidth = width - margin.left - margin.right;
@@ -103,9 +106,6 @@ class BarChart extends HTMLElement {
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
       .attr('id', 'y-axis')
       .call(yAxis);
-    // Get bar colors through CSS
-    //const colors = getBarColors(this);
-    //["blue", "red", "green", "white", "black", "orange", "brown", "steelblue", "purple", "pink"]
 
     // Append bars
     barChartSvg
@@ -121,7 +121,7 @@ class BarChart extends HTMLElement {
       .attr('y', (d) => margin.top + yScale(d))
       .attr('width', xScale.bandwidth())
       .attr('height', (d) => chartHeight - yScale(d))
-      .attr('fill', 'red');
+      .attr('fill', (_, i) => colors[Object.keys(dataDict[dataSeriesKey])[i]]);
 
     // X-Label
     barChartSvg
@@ -203,6 +203,7 @@ class LineChart extends HTMLElement {
     height: number,
     dictionaries: [
       { [key: string]: { [innerKey: string]: number } },
+      { [key: string]: string },
       { [key: string]: string }
     ]
   ): void {
@@ -214,6 +215,7 @@ class LineChart extends HTMLElement {
     };
     const data = dictionaries[0];
     const headers = dictionaries[1];
+    const colors = dictionaries[2];
 
     const xScale = scalePoint()
       .domain(
@@ -245,7 +247,7 @@ class LineChart extends HTMLElement {
         .datum(Object.entries(lineData).map(([x, y]) => ({ x, y })))
         .attr('d', lineGenerator)
         .attr('fill', 'none')
-        .attr('stroke', 'steelblue')
+        .attr('stroke', colors[key])
         .attr('id', key);
     });
 
@@ -303,6 +305,7 @@ function getTableDict(
   classObject: LineChart | BarChart
 ): [
   { [key: string]: { [innerKey: string]: number } },
+  { [key: string]: string },
   { [key: string]: string }
 ] {
   const tableElement = classObject.querySelector('table');
@@ -311,6 +314,7 @@ function getTableDict(
     throw new Error('<table> element not found');
   }
   let dataDict: { [key: string]: { [innerKey: string]: number } } = {};
+  let colorsDict: { [key: string]: string } = {};
 
   const theadQuerySelector = classObject.querySelector('thead');
   if (theadQuerySelector) {
@@ -319,6 +323,18 @@ function getTableDict(
       let thElements = trElement.querySelectorAll('th');
       if (thElements) {
         thElements.forEach((value, index1) => {
+          let label: string = value.textContent?.trim();
+          let id = value.getAttribute('id');
+          let classAttr = value.getAttribute('classAttr');
+          // Color logic
+          if (id || classAttr) {
+            const color: string = getColor(id, classAttr);
+            if (color) {
+              colorsDict[label] = color;
+            } else {
+              colorsDict[label] = 'blue';
+            }
+          }
           let tempDict: { [innerKey: string]: number } = {};
           const body = tableElement.querySelector('tbody');
           const tableRows = body.querySelectorAll('tr');
@@ -330,7 +346,16 @@ function getTableDict(
               );
             }
             const key = (cells[0] as HTMLElement).textContent?.trim();
-
+            id = cells[0].getAttribute('id');
+            classAttr = cells[0].getAttribute('class');
+            if (id || classAttr) {
+              const color: string = getColor(id, classAttr);
+              if (color) {
+                colorsDict[key] = color;
+              } else {
+                colorsDict[key] = 'blue';
+              }
+            }
             for (let i = 1; i < cells.length; ++i) {
               let cell = cells[i];
               const value = (cell as HTMLElement).textContent?.trim();
@@ -348,12 +373,12 @@ function getTableDict(
               }
             }
           });
-          dataDict[value.textContent?.trim()] = tempDict;
+          dataDict[label] = tempDict;
         });
       }
     }
   }
-  return [dataDict, getAxisTitles(classObject)];
+  return [dataDict, getAxisTitles(classObject), colorsDict];
 }
 
 /**
@@ -367,6 +392,7 @@ function getDataSeriesDict(
   classObject
 ): [
   { [key: string]: { [innerKey: string]: number } },
+  { [key: string]: string },
   { [key: string]: string }
 ] {
   const dataSeriesElement = classObject.querySelectorAll('dataseries');
@@ -401,7 +427,7 @@ function getDataSeriesDict(
     });
     dataDict[dataSeriesName] = dataPointsDict;
   });
-  return [dataDict, getAxisTitles(classObject)];
+  return [dataDict, getAxisTitles(classObject), {}];
 }
 
 /**
@@ -494,7 +520,7 @@ function getSizeFromCss(classObject: LineChart | BarChart): {
   [key: string]: number;
 } {
   // Inner function setting the size of the chart
-  const setSize = (rule: CSSStyleRule): { [key: string]: number } => {
+  const getSize = (rule: CSSStyleRule): { [key: string]: number } => {
     let attributes: { [key: string]: number } = {};
     let chartWidth: number = undefined;
     let chartHeight: number = undefined;
@@ -529,13 +555,13 @@ function getSizeFromCss(classObject: LineChart | BarChart): {
             rule instanceof CSSStyleRule &&
             rule.selectorText === `#${idAttr}`
           ) {
-            attributes = setSize(rule);
+            attributes = getSize(rule);
             break;
           } else if (
             rule instanceof CSSStyleRule &&
             rule.selectorText === `.${classAttr}`
           ) {
-            attributes = setSize(rule);
+            attributes = getSize(rule);
           }
         }
       }
@@ -600,4 +626,36 @@ function getAxisTitles(classObject: LineChart | BarChart): {
   axisTitles['x-axis'] = xAxisName;
   axisTitles['y-axis'] = yAxisName;
   return axisTitles;
+}
+
+function getColor(id: string, classAttr: string): string {
+  // Inner function setting the color of the line or bars
+  const getColorInner = (rule: CSSStyleRule): string => {
+    let color: string = undefined;
+    const styleDeclaration = rule.style;
+    if (styleDeclaration.getPropertyValue('--color')) {
+      color = styleDeclaration.getPropertyValue('--color');
+    }
+    return color;
+  };
+  let color: string = undefined;
+  if (document.styleSheets.length !== 0) {
+    for (const stylesheet of document.styleSheets) {
+      if (stylesheet.cssRules) {
+        for (const rule of stylesheet.cssRules) {
+          // Id has most precedence
+          if (rule instanceof CSSStyleRule && rule.selectorText === `#${id}`) {
+            color = getColorInner(rule);
+            break;
+          } else if (
+            rule instanceof CSSStyleRule &&
+            rule.selectorText === `.${classAttr}`
+          ) {
+            color = getColorInner(rule);
+          }
+        }
+      }
+    }
+  }
+  return color;
 }
