@@ -74,7 +74,7 @@ class BarChart extends HTMLElement {
     const dataDict = dictionaries[0];
     const headers = dictionaries[1];
     const colors = dictionaries[2];
-    const dataSeriesKey = Object.keys(dataDict)[0]; // Only one dataseries possible for bar chart 
+    const dataSeriesKey = Object.keys(dataDict)[0]; // Only one dataseries possible for bar chart
     const dataArray = getDictValues(dataDict[dataSeriesKey]);
 
     const chartWidth = width - margin.left - margin.right;
@@ -396,12 +396,12 @@ function getDataSeriesDict(
   { [key: string]: string }
 ] {
   const dataSeriesElement = classObject.querySelectorAll('dataseries');
-
   if (!dataSeriesElement) {
     throw new Error('<dataseries> element not found');
   }
 
   let dataDict: { [key: string]: { [innerKey: string]: number } } = {};
+  let colorDict: { [key: string]: string } = {};
 
   dataSeriesElement.forEach(function (value) {
     const dataPointElements = value.querySelectorAll('datapoint');
@@ -411,6 +411,12 @@ function getDataSeriesDict(
     }
     if (!dataPointElements.length) {
       throw new Error('No <datapoint> elements found inside <dataseries>');
+    }
+    let id = value.getAttribute('id');
+    let classAttr = value.getAttribute('class');
+    if (id || classAttr) {
+      const color: string = getColor(id, classAttr);
+      colorDict[dataSeriesName] = color;
     }
     let dataPointsDict = {};
     dataPointElements.forEach((dataPoint) => {
@@ -423,11 +429,17 @@ function getDataSeriesDict(
           `<datapoint> value ${dataValues[1]} is not a valid input for chart`
         );
       }
+      id = dataPoint.getAttribute('id');
+      classAttr = dataPoint.getAttribute('class');
+      if (id || classAttr) {
+        const color: string = getColor(id, classAttr);
+        colorDict[dataValues[0]] = color;
+      }
       dataPointsDict[dataValues[0]] = parseFloat(dataValues[1]);
     });
     dataDict[dataSeriesName] = dataPointsDict;
   });
-  return [dataDict, getAxisTitles(classObject), {}];
+  return [dataDict, getAxisTitles(classObject), colorDict];
 }
 
 /**
@@ -545,12 +557,35 @@ function getSizeFromCss(classObject: LineChart | BarChart): {
   let attributes: { [key: string]: number } = {};
   let classAttr = classObject.getAttribute('class');
   let idAttr = classObject.getAttribute('id');
-
+  console.log(document.styleSheets);
   if (document.styleSheets.length !== 0) {
-    for (const stylesheet of document.styleSheets) {
-      if (stylesheet.cssRules) {
-        for (const rule of stylesheet.cssRules) {
-          // Id has most precedence
+    try {
+      for (const stylesheet of document.styleSheets) {
+        if (stylesheet.cssRules) {
+          for (const rule of stylesheet.cssRules) {
+            // Id has most precedence
+            if (
+              rule instanceof CSSStyleRule &&
+              rule.selectorText === `#${idAttr}`
+            ) {
+              attributes = getSize(rule);
+              break;
+            } else if (
+              rule instanceof CSSStyleRule &&
+              rule.selectorText === `.${classAttr}`
+            ) {
+              attributes = getSize(rule);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      const styleSheet = Array.from(document.styleSheets).find(
+        (sheet) => sheet.ownerNode instanceof HTMLStyleElement
+      ) as CSSStyleSheet;
+      if (styleSheet) {
+        const rules = Array.from(styleSheet.cssRules);
+        for (const rule of rules) {
           if (
             rule instanceof CSSStyleRule &&
             rule.selectorText === `#${idAttr}`
@@ -631,19 +666,42 @@ function getAxisTitles(classObject: LineChart | BarChart): {
 function getColor(id: string, classAttr: string): string {
   // Inner function setting the color of the line or bars
   const getColorInner = (rule: CSSStyleRule): string => {
-    let color: string = undefined;
+    let color: string = 'blue';
     const styleDeclaration = rule.style;
     if (styleDeclaration.getPropertyValue('--color')) {
       color = styleDeclaration.getPropertyValue('--color');
     }
     return color;
   };
-  let color: string = undefined;
+  let color: string = 'blue';
   if (document.styleSheets.length !== 0) {
-    for (const stylesheet of document.styleSheets) {
-      if (stylesheet.cssRules) {
-        for (const rule of stylesheet.cssRules) {
-          // Id has most precedence
+    try {
+      for (const stylesheet of document.styleSheets) {
+        if (stylesheet.cssRules) {
+          for (const rule of stylesheet.cssRules) {
+            // Id has most precedence
+            if (
+              rule instanceof CSSStyleRule &&
+              rule.selectorText === `#${id}`
+            ) {
+              color = getColorInner(rule);
+              break;
+            } else if (
+              rule instanceof CSSStyleRule &&
+              rule.selectorText === `.${classAttr}`
+            ) {
+              color = getColorInner(rule);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      const styleSheet = Array.from(document.styleSheets).find(
+        (sheet) => sheet.ownerNode instanceof HTMLStyleElement
+      ) as CSSStyleSheet;
+      if (styleSheet) {
+        const rules = Array.from(styleSheet.cssRules);
+        for (const rule of rules) {
           if (rule instanceof CSSStyleRule && rule.selectorText === `#${id}`) {
             color = getColorInner(rule);
             break;
