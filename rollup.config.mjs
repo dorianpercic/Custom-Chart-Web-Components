@@ -1,24 +1,31 @@
-import typescript from 'rollup-plugin-typescript2';
+import typescript from '@rollup/plugin-typescript';
 import resolve from '@rollup/plugin-node-resolve';
 
 export default [
   {
-    input: ['src/easycharts.ts'],
+    input: ['src/easycharts.mts'],
     output: {
       dir: 'dist/linechart/esm',
       format: 'esm',
     },
-    plugins: [resolve(), typescript()],
+    plugins: [
+      resolve(),
+      typescript({
+        tsconfig: './tsconfig.json',
+      }),
+    ],
   },
   {
-    input: ['src/easycharts.ts'],
+    input: ['src/easycharts.mts'],
     output: {
       dir: 'dist/barchart/esm',
       format: 'esm',
     },
     plugins: [
-      resolve(), // Resolves node_modules dependencies
-      typescript(), // Transpile TypeScript to JavaScript
+      resolve(),
+      typescript({
+        tsconfig: './tsconfig.json',
+      }),
     ],
   },
 ];

@@ -7,13 +7,14 @@
     "node": ">=14.18.1"
   },
   "scripts": {
-    "build": "rollup -c rollup.config.js",
+    "build": "rollup -c rollup.config.mjs",
     "serve": "serve"
   },
   "author": "Ville Määttä, Dorian Percic, Tomo Ratko",
   "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.1.0",
+    "@rollup/plugin-typescript": "^11.1.1",
     "@types/d3": "^7.4.0",
     "@types/node": "^20.3.1",
     "gulp": "^4.0.2",

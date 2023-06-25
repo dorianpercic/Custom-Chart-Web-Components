@@ -52,8 +52,8 @@ class BarChart extends HTMLElement {
    * Function drawing the chart and adding it to the Shadow DOM.
    * @param {number} width: Width of chart
    * @param {number} height: Height of chart
-   * @param [{{[key: string]: number}}, {{[key: string]: string}}] dataDict: 2 dictionaries, 1 consisting of datapoints
-   * and the other of the x and y axis headers.
+   * @param {[ { [key: string]: { [innerKey: string]: number } }, { [key: string]: string } ]} dictionaries: 2 dictionaries, 1 consisting of datapoints
+   * and the other of the x and y axis titles.
    */
   drawBarChart(
     width: number,
@@ -103,7 +103,11 @@ class BarChart extends HTMLElement {
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
       .attr('id', 'y-axis')
       .call(yAxis);
-
+    // Get bar colors through CSS
+    //const colors = getBarColors(this);
+    //["blue", "red", "green", "white", "black", "orange", "brown", "steelblue", "purple", "pink"]
+    
+    // Append bars
     barChartSvg
       .append('g')
       .selectAll('rect')
@@ -190,8 +194,8 @@ class LineChart extends HTMLElement {
    * Function drawing the chart and adding it to the Shadow DOM.
    * @param {number} width: Width of chart
    * @param {number} height: Height of chart
-   * @param [{{[key: string]: number}}, {{[key: string]: string}}] dataDict: 2 dictionaries, 1 consisting of datapoints
-   * and the other of the x and y axis headers.
+   * @param {[ { [key: string]: { [innerKey: string]: number } }, { [key: string]: string } ]} dictionaries: 2 dictionaries, 1 consisting of datapoints
+   * and the other of the x and y axis titles.
    */
 
   drawLineChart(
@@ -231,6 +235,7 @@ class LineChart extends HTMLElement {
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('version', '1.1');
 
+    // Draw lines
     const lineGenerator = line<{ x: string; y: number }>()
       .x((d) => xScale(d.x) || 0)
       .y((d) => yScale(d.y) || 0);

@@ -23,6 +23,18 @@ gulp.task('barchart-html-examples', async function () {
     .pipe(gulp.dest('dist/barchart/esm/examples/html'));
 });
 
+gulp.task('css-barchart', async function () {
+  return gulp
+    .src('src/css/style.css')
+    .pipe(gulp.dest('dist/barchart/esm/examples/html'));
+});
+
+gulp.task('css-linechart', async function () {
+  return gulp
+    .src('src/css/style.css')
+    .pipe(gulp.dest('dist/linechart/esm/examples/html'));
+});
+
 gulp.task('linechart-html-examples', async function () {
   gulp
     .src([
@@ -45,6 +57,8 @@ gulp.task(
   gulp.series(
     'barchart-html-examples',
     'linechart-html-examples',
+    'css-linechart',
+    'css-barchart',
     rollup,
     serve
   )
