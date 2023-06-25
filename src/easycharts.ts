@@ -24,12 +24,17 @@ class BarChart extends HTMLElement {
    * is attached to the DOM.
    */
   connectedCallback() {
+    // Set size, CSS has most precedence
     let width = setChartWidth(this);
     let height = setChartHeight(this);
-    const attributes = handleCss(this);
-    if (attributes.length !== 0) {
-      height = attributes[0];
-      width = attributes[1];
+    const attributes = getSizeFromCss(this);
+    if (attributes) {
+      if (attributes['height']) {
+        height = attributes['height'];
+      }
+      if (attributes['width']) {
+        width = attributes['width'];
+      }
     }
 
     if (this.querySelector('table')) {
@@ -69,7 +74,6 @@ class BarChart extends HTMLElement {
     const dataSeriesKey = Object.keys(dataDict)[0];
     const dataArray = getDictValues(dataDict[dataSeriesKey]);
 
-    console.log(dataArray);
     const chartWidth = width - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;
 
@@ -109,10 +113,7 @@ class BarChart extends HTMLElement {
         'x',
         (_, i) => margin.left + xScale(Object.keys(dataDict[dataSeriesKey])[i])
       )
-      .attr(
-        'id',
-        (_, i) => Object.keys(dataDict[dataSeriesKey])[i]
-      )
+      .attr('id', (_, i) => Object.keys(dataDict[dataSeriesKey])[i])
       .attr('y', (d) => margin.top + yScale(d))
       .attr('width', xScale.bandwidth())
       .attr('height', (d) => chartHeight - yScale(d))
@@ -139,22 +140,11 @@ class BarChart extends HTMLElement {
       .text(headers['y-axis']);
 
     this.shadowRoot?.appendChild(barChartSvg.node());
-    /*
-    let style = document.createElement('link');
-    style.setAttribute('rel', 'stylesheet');
-    style.setAttribute('href', '../css/style.css');
-    this.shadowRoot.append(style);*/
   }
 }
 
 // Define the custom element "bar-chart"
 customElements.define('ec-barchart', BarChart);
-
-/** Custom type for defining datapoints for linechart */
-type dataPoint = {
-  x: string;
-  y: number;
-};
 
 /** Class for line chart web component. */
 class LineChart extends HTMLElement {
@@ -172,12 +162,17 @@ class LineChart extends HTMLElement {
    * is attached to the DOM.
    */
   connectedCallback() {
+    // Set size, CSS has most precedence
     let width = setChartWidth(this);
     let height = setChartHeight(this);
-    const attributes = handleCss(this);
-    if (attributes.length !== 0) {
-      height = attributes[0];
-      width = attributes[1];
+    const attributes = getSizeFromCss(this);
+    if (attributes) {
+      if (attributes['height']) {
+        height = attributes['height'];
+      }
+      if (attributes['width']) {
+        width = attributes['width'];
+      }
     }
 
     if (this.querySelector('table')) {
@@ -246,10 +241,7 @@ class LineChart extends HTMLElement {
         .attr('d', lineGenerator)
         .attr('fill', 'none')
         .attr('stroke', 'steelblue')
-        .attr(
-          'id',
-          key
-        );
+        .attr('id', key);
     });
 
     lineChartSvg
@@ -326,7 +318,6 @@ function getTableDict(
     const trElement = axisTitleQuerySelector.querySelectorAll('tr');
     if (trElement) {
       let thElement = trElement[0].querySelectorAll('th');
-      console.log(thElement);
       thElement.forEach((value, i) => {
         if (thElement) {
           switch (i) {
@@ -422,7 +413,6 @@ function getDataSeriesDict(
 
   dataSeriesElement.forEach(function (value) {
     const dataPointElements = value.querySelectorAll('datapoint');
-    console.log(dataSeriesElement);
     let dataSeriesName: string = value.getAttribute('name');
     if (!dataSeriesName) {
       throw new Error('No "name" attribute in dataseries');
@@ -445,8 +435,6 @@ function getDataSeriesDict(
     });
     dataDict[dataSeriesName] = dataPointsDict;
   });
-
-  console.log(dataDict);
   return [dataDict, headerDict];
 }
 
@@ -534,32 +522,56 @@ function handleDataSeriesMode(
 /**
  * Function checking if input is a valid number.
  * @param {classObject: LineChart | BarChart}: Class object of respective chart.
- * @returns {number[]}: Return array of numbers: [0] -> height, [1] -> width.
+ * @returns {{[key: string]: number}}: Return size dictionarty of numbers: "height" -> int, "width" -> int.
  */
-function handleCss(classObject: LineChart | BarChart): number[] {
-  const styleSheet = Array.from(document.styleSheets).find(
-    (sheet) => sheet.ownerNode instanceof HTMLStyleElement
-  ) as CSSStyleSheet;
-  let attributes: number[] = [];
-  if (styleSheet) {
-    const rules = Array.from(styleSheet.cssRules);
-    let classAttr = classObject.getAttribute('class');
-    for (const rule of rules) {
-      if (
-        rule instanceof CSSStyleRule &&
-        rule.selectorText === `.${classAttr}`
-      ) {
-        const styleDeclaration = rule.style;
-        const chartWidth: number = parseInt(
-          styleDeclaration.getPropertyValue('--chart-width'),
-          10
-        );
-        const chartHeight: number = parseInt(
-          styleDeclaration.getPropertyValue('--chart-height'),
-          10
-        );
-        attributes.push(chartHeight);
-        attributes.push(chartWidth);
+function getSizeFromCss(classObject: LineChart | BarChart): {
+  [key: string]: number;
+} {
+  // Inner function setting the size of the chart
+  const setSize = (rule: CSSStyleRule): { [key: string]: number } => {
+    let attributes: { [key: string]: number } = {};
+    let chartWidth: number = undefined;
+    let chartHeight: number = undefined;
+    const styleDeclaration = rule.style;
+    if (styleDeclaration.getPropertyValue('--chart-width')) {
+      chartWidth = parseInt(
+        styleDeclaration.getPropertyValue('--chart-width'),
+        10
+      );
+    }
+    if (styleDeclaration.getPropertyValue('--chart-height')) {
+      chartHeight = parseInt(
+        styleDeclaration.getPropertyValue('--chart-height'),
+        10
+      );
+    }
+    attributes['height'] = chartHeight;
+    attributes['width'] = chartWidth;
+    return attributes;
+  };
+
+  let attributes: { [key: string]: number } = {};
+  let classAttr = classObject.getAttribute('class');
+  let idAttr = classObject.getAttribute('id');
+
+  if (document.styleSheets.length !== 0) {
+    for (const stylesheet of document.styleSheets) {
+      if (stylesheet.cssRules) {
+        for (const rule of stylesheet.cssRules) {
+          // Id has most precedence
+          if (
+            rule instanceof CSSStyleRule &&
+            rule.selectorText === `#${idAttr}`
+          ) {
+            attributes = setSize(rule);
+            break;
+          } else if (
+            rule instanceof CSSStyleRule &&
+            rule.selectorText === `.${classAttr}`
+          ) {
+            attributes = setSize(rule);
+          }
+        }
       }
     }
   }
