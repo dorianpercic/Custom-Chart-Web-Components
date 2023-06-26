@@ -7,22 +7,22 @@ import {
   create,
   max,
   line,
-  ticks,
 } from 'd3';
 
-/** Class for bar chart web component. */
+/**
+ * Class for bar chart web component.
+ */
 class BarChart extends HTMLElement {
   /**
    * Constructor of web component, create Shadow DOM.
-   * @constructor
    */
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
   }
 
-  /** This life-cycle method will be called as soon as the web component
-   * is attached to the DOM.
+  /**
+   * This life-cycle method will be called as soon as the web component is attached to the DOM.
    */
   connectedCallback() {
     // Set size, CSS has most precedence
@@ -52,10 +52,11 @@ class BarChart extends HTMLElement {
 
   /**
    * Function drawing the chart and adding it to the Shadow DOM.
-   * @param {number} width: Width of chart
-   * @param {number} height: Height of chart
-   * @param {[ { [key: string]: { [innerKey: string]: number } }, { [key: string]: string } ]} dictionaries: 2 dictionaries, 1 consisting of datapoints
-   * and the other of the x and y axis titles.
+   * @param width - Width of the chart.
+   * @param height - Height of the chart.
+   * @param dictionaries - Array of 3 dictionaries: First consisting of the datapoints,
+   * second of the x and y axis titles and the third of the colors.
+   * @param showTicks - Flag indicating whether to show ticks on the x-axis. Default is 'true'.
    */
   drawBarChart(
     width: number,
@@ -152,14 +153,15 @@ class BarChart extends HTMLElement {
   }
 }
 
-// Define the custom element "bar-chart"
+// Define the custom element "ec-barchart"
 customElements.define('ec-barchart', BarChart);
 
-/** Class for line chart web component. */
+/**
+ * Class for bar chart web component.
+ */
 class LineChart extends HTMLElement {
   /**
    * Constructor of web component, create Shadow DOM.
-   * @constructor
    */
   constructor() {
     super();
@@ -167,8 +169,8 @@ class LineChart extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
-  /** This life-cycle method will be called as soon as the web component
-   * is attached to the DOM.
+  /**
+   * This life-cycle method will be called as soon as the web component is attached to the DOM.
    */
   connectedCallback() {
     // Set size, CSS has most precedence
@@ -198,10 +200,11 @@ class LineChart extends HTMLElement {
 
   /**
    * Function drawing the chart and adding it to the Shadow DOM.
-   * @param {number} width: Width of chart
-   * @param {number} height: Height of chart
-   * @param {[ { [key: string]: { [innerKey: string]: number } }, { [key: string]: string } ]} dictionaries: 2 dictionaries, 1 consisting of datapoints
-   * and the other of the x and y axis titles.
+   * @param width - Width of the chart.
+   * @param height - Height of the chart.
+   * @param dictionaries - Array of 3 dictionaries: First consisting of the datapoints,
+   * second of the x and y axis titles and the third of the colors.
+   * @param showTicks - Flag indicating whether to show ticks on the x-axis. Default is 'true'.
    */
   drawLineChart(
     width: number,
@@ -310,7 +313,7 @@ class LineChart extends HTMLElement {
     this.shadowRoot?.appendChild(lineChartSvg.node());
   }
 }
-// Define the custom element "line-chart"
+// Define the custom element "ec-linechart"
 customElements.define('ec-linechart', LineChart);
 
 /**
@@ -321,9 +324,10 @@ customElements.define('ec-linechart', LineChart);
  */
 
 /**
- * Function, which creates the chart dictionary out of table structure.
- * @param {classObject: LineChart | BarChart}: Class object of respective chart.
- * @returns {{[key: string]: number}}: Return dictionary of data points: key -> string, value -> number.
+ * Function, which creates the chart dictionary out of HTML table structure.
+ * @param classObject - Class object of respective chart.
+ * @returns Array of 3 dictionaries: First consisting of the datapoints,
+ * second of the x and y axis titles and the third of the colors.
  */
 function getTableDict(
   classObject: LineChart | BarChart
@@ -406,10 +410,9 @@ function getTableDict(
 
 /**
  * Function, which creates the chart dictionary out of data series.
- * @param {classObject: LineChart | BarChart}: Class object of respective chart.
- * @returns [{{[key: string]: number}}, {{[key: string]: string}}]: Return 2 dictionaries:
- * 1. Data points: key -> string, value -> number.
- * 2. X and Y Axis names: key -> string, value -> string.
+ * @param classObject - Class object of respective chart.
+ * @returns Array of 3 dictionaries: First consisting of the datapoints,
+ * second of the x and y axis titles and the third of the colors.
  */
 function getDataSeriesDict(
   classObject
@@ -467,8 +470,8 @@ function getDataSeriesDict(
 
 /**
  * Function returning an array of the values of the input dictionary.
- * @param {{[key: string]: number}} dict: Input dictionary
- * @returns {number[]}: Return array of values of input dictionary.
+ * @param dict - Input dictionary
+ * @returns Array of numeric values of input dictionary.
  */
 function getDictValues(dict: { [key: string]: number }): number[] {
   return Object.values(dict);
@@ -476,8 +479,8 @@ function getDictValues(dict: { [key: string]: number }): number[] {
 
 /**
  * Function setting the chart width through HTML attribute.
- * @param {classObject: LineChart | BarChart}: Class object of respective chart.
- * @returns {number}: Return width of chart. Default set to 500.
+ * @param classObject - Class object of respective chart.
+ * @returns Width of chart. Default set to 500.
  */
 function setChartWidth(classObject): number {
   let width = 500;
@@ -493,8 +496,8 @@ function setChartWidth(classObject): number {
 
 /**
  * Function setting the chart height through HTML attribute.
- * @param {classObject: LineChart | BarChart}: Class object of respective chart.
- * @returns {number}: Return height of chart. Default set to 300.
+ * @param classObject - Class object of respective chart.
+ * @returns Height of chart. Default set to 300.
  */
 function setChartHeight(classObject): number {
   let height = 300;
@@ -510,49 +513,17 @@ function setChartHeight(classObject): number {
 
 /**
  * Function checking if input is a valid number.
- * @param {string} str: Input string
- * @returns {boolean}: Return true if input string is a valid number, otherwise false.
+ * @param str - Input string
+ * @returns True if input string is a valid number, otherwise false.
  */
 function isValidNumber(str: string): boolean {
   return !isNaN(parseFloat(str));
 }
 
-/** Function for drawing the chart in dataseries mode.
- * @param {classObject: LineChart | BarChart}: Class object of respective chart.
- */
-function handleDataSeriesMode(
-  classObject: LineChart | BarChart,
-  chartWidth: number,
-  chartHeight: number,
-  showTicks: string
-): void {
-  try {
-    const dictionaries = getDataSeriesDict(classObject);
-
-    if (classObject instanceof BarChart) {
-      (classObject as BarChart).drawBarChart(
-        chartWidth,
-        chartHeight,
-        dictionaries,
-        showTicks
-      );
-    } else if (classObject instanceof LineChart) {
-      (classObject as LineChart).drawLineChart(
-        chartWidth,
-        chartHeight,
-        dictionaries,
-        showTicks
-      );
-    }
-  } catch (error) {
-    console.error('[Error]', error.message);
-  }
-}
-
 /**
  * Function getting the size of a chart through CSS.
- * @param {classObject: LineChart | BarChart}: Class object of respective chart.
- * @returns {{[key: string]: number}}: Return "size" dictionary of numbers: "height" -> int, "width" -> int.
+ * @param classObject - Class object of respective chart.
+ * @returns Dictionary with size attributes found in CSS.
  */
 function getSizeFromCss(classObject: LineChart | BarChart): {
   [key: string]: number;
@@ -630,8 +601,48 @@ function getSizeFromCss(classObject: LineChart | BarChart): {
   return attributes;
 }
 
-/** Function for drawing the chart using HTML table.
- * @param {classObject: LineChart | BarChart}: Class object of respective chart.
+/**
+ * Function handling the data series mode.
+ * @param classObject - Class object of respective chart.
+ * @param chartWidth - Width of the chart.
+ * @param chartHeight - Height of the chart.
+ * @param showTicks - Flag indicating whether to show ticks on the x-axis. Default is 'true'.
+ */
+function handleDataSeriesMode(
+  classObject: LineChart | BarChart,
+  chartWidth: number,
+  chartHeight: number,
+  showTicks: string
+): void {
+  try {
+    const dictionaries = getDataSeriesDict(classObject);
+
+    if (classObject instanceof BarChart) {
+      (classObject as BarChart).drawBarChart(
+        chartWidth,
+        chartHeight,
+        dictionaries,
+        showTicks
+      );
+    } else if (classObject instanceof LineChart) {
+      (classObject as LineChart).drawLineChart(
+        chartWidth,
+        chartHeight,
+        dictionaries,
+        showTicks
+      );
+    }
+  } catch (error) {
+    console.error('[Error]', error.message);
+  }
+}
+
+/**
+ * Function handling the table mode.
+ * @param classObject - Class object of respective chart.
+ * @param chartWidth - Width of the chart.
+ * @param chartHeight - Height of the chart.
+ * @param showTicks - Flag indicating whether to show ticks on the x-axis. Default is 'true'.
  */
 function handleTableMode(
   classObject: LineChart | BarChart,
@@ -662,9 +673,10 @@ function handleTableMode(
   }
 }
 
-/** Function for getting the x and y axis title names.
- * @param {classObject: LineChart | BarChart}: Class object of respective chart.
- * @returns {{[key:string]: string}} axisTitles: Dictionary of axis titles.
+/**
+ * Function for getting the x and y axis title names.
+ * @param classObject - Class object of respective chart.
+ * @returns Dictionary of axis titles.
  */
 function getAxisTitles(classObject: LineChart | BarChart): {
   [key: string]: string;
@@ -691,10 +703,11 @@ function getAxisTitles(classObject: LineChart | BarChart): {
   return axisTitles;
 }
 
-/** Function for getting the color through CSS.
- * @param {id: string}: "id" of HTML element.
- * @param {classAttr: string}: "class" of HTML element.
- * @returns {string} color: Found color of id or class.
+/**
+ * Function for getting the color of lines or bars through CSS.
+ * @param id - "id" attribute of HTML element.
+ * @param classAttr - "class" attribute of HTML element.
+ * @returns Found color of "id" or "class".
  */
 function getColor(id: string, classAttr: string): string {
   // Inner function getting the color of the line or bars
@@ -751,9 +764,10 @@ function getColor(id: string, classAttr: string): string {
   return color;
 }
 
-/** Function for getting the ticks flag through CSS.
- * @param {classObject: LineChart | BarChart}: Class object of respective chart.
- * @returns {string} flag: Flag if x axis ticks should be shown. "true" is default.
+/**
+ * Function for getting the ticks flag through CSS.
+ * @param classObject - Class object of respective chart.
+ * @returns Flag if x axis ticks should be shown. "true" is default.
  */
 function getTicksFlag(classObject: LineChart | BarChart): string {
   // Inner function getting the ticks flag
