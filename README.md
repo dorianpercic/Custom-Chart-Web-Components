@@ -35,7 +35,7 @@ EasyCharts offers a way to input data in HTML table format inside the bar or lin
 </table>
 ```
 
-The first `<td>` inside `<tbody>` represents the label of the datapoint and the following `<td>` elements are the values of the datapoint. <br>
+The first `<td>` inside `<tbody>` represents the label of the datapoint and the following `<td>` elements are the values of the datapoint.
 
 The following attributes are present in a `<th>` element:
 | Attribute | Description |
@@ -61,7 +61,7 @@ If HTML tables seem too complicated, dataseries can be used. Basic example:
 </dataseries>
 ```
 
-The label is on the left of the comma seperator (`,`) and on the right of the comma seperator there is the value of the datapoint. Furthermore, each dataseries has to have a name, using the `name` attribute. <br>
+The label is on the left of the comma seperator (`,`) and on the right of the comma seperator there is the value of the datapoint. Furthermore, each dataseries has to have a name, using the `name` attribute.
 
 The following attributes are present in a `<dataseries>` element:
 | Attribute | Description |
@@ -192,8 +192,52 @@ but with the
 
 HTML tags. To see full list of attributes, please again refer to the [Line Chart](#line-chart) section, because the attributes are exactly the same.
 
-
 ### Styling With CSS
+
+There are 2 ways to style the components in CSS:
+
+- Through id's (`#id`)
+- Through class attributes (`.class`)
+
+To see which CSS property belongs to which element look for the tables in the previous chapters.
+
+Table showing all currently available CSS properties:
+| Property | Description |
+|--------------|---------------------------|
+| --color | Set color of dataseries/datapoint. |
+| --chart-height | Set height of the chart. |
+| --chart-width | Set width of the chart. |
+| --show-ticks | Flag either `true` or `false` for specifying if x axis ticks should be shown. Default is `true`. |
+
+Example usage:
+
+```html
+[...]
+<style>
+  .mlinechart1 {
+    --chart-width: 500;
+    --chart-height: 300;
+  }
+  #samsung {
+    --color: blue;
+  }
+  #apple {
+    --color: green;
+  }
+</style>
+[...]
+<ec-linechart class="mlinechart1">
+  <table>
+    <thead>
+      <tr>
+        <th id="samsung">Samsung</th>
+        <th id="apple">Apple</th>
+      </tr>
+    </thead>
+    [...]
+  </table>
+</ec-linechart>
+```
 
 ## For Developers
 
@@ -204,24 +248,20 @@ To install the custom EasyCharts web components, follow these steps:
 1. Clone or download the project repository.
 2. Install and use the minimum NodeJS version `v14.18.1 (npm v6.14.15)`.
 3. Install the required dependencies by running the following command in the project root directory:
+   > `npm install`
 
-> `npm install`
+### Building the Project The project uses Gulp as a
 
-### Building the Project
-
-The project uses Gulp as a build tool. To build the project, run the following command in the project root directory:
+build tool. To build the project, run the following command in the project root directory:
 
 > `npx gulp`
 
-This will transpile the source files and generate the compiled JavaScript files for the line chart and bar chart. They can then be located in the repsective folder in the `dist/` directory.
+This will transpile the source files and generate the
+compiled JavaScript files for the line chart and bar chart. They can then be located in the repsective folder in the `dist/` directory.
 
-## File Structure
+## File Structure The
 
-The source files for the web components are located in the `src/` directory, named `easycharts.mts`.
-
-```
-
-```
+source files for the web components are located in the `src/` directory, named `easycharts.mts`.
 
 ## License
 
