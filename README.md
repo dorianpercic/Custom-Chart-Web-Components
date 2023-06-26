@@ -35,11 +35,23 @@ EasyCharts offers a way to input data in HTML table format inside the bar or lin
 </table>
 ```
 
-The first `<td>` inside `<tbody>` represents the label of the datapoint and the following `<td>` elements are the values of the datapoint.
+The first `<td>` inside `<tbody>` represents the label of the datapoint and the following `<td>` elements are the values of the datapoint. <br>
+
+The following attributes are present in a `<th>` element:
+| Attribute | Description |
+|--------------|---------------------------|
+| id | Unique id for dataseries represented in `<th>`. Used for CSS in linechart for the line color. |
+| class | Class attribute of dataseries in `<th>`. Used for CSS in linechart for the line color. |
+
+The following attributes are present in a `<td>` element:
+| Attribute | Description |
+|--------------|---------------------------|
+| id | Unique id for datapoint represented in `<td>`. Used for CSS in barchart for the bar color. |
+| class | Class attribute of datapoint in `<td>`. Used for CSS in barchart for the bar color. |
 
 #### Dataseries
 
-If HTML tables are too complicated, dataseries can be used. Basic example:
+If HTML tables seem too complicated, dataseries can be used. Basic example:
 
 ```html
 <dataseries name="dataseries1">
@@ -49,7 +61,19 @@ If HTML tables are too complicated, dataseries can be used. Basic example:
 </dataseries>
 ```
 
-The label is on the left of the comma seperator (`,`) and on the right of the comma seperator there is the value of the datapoint. Furthermore, each dataseries has to have a name, using the `name` attribute.
+The label is on the left of the comma seperator (`,`) and on the right of the comma seperator there is the value of the datapoint. Furthermore, each dataseries has to have a name, using the `name` attribute. <br>
+The following attributes are present in a `<dataseries>` element:
+| Attribute | Description |
+|--------------|---------------------------|
+| name | Name of the dataseries. Necessary for the internal data structure. In multiline chart it represents the line name. |
+| id | Unique id for dataseries. Used for CSS in linechart for the line color. |
+| class | Class attribute of the dataseries. Used for CSS in linechart for the line color. |
+
+The following attributes are present in a `<datapoint>` element:
+| Attribute | Description |
+|--------------|---------------------------|
+| id | Unique id for datapoint. Used for CSS in barchart for the bar color. |
+| class | Class attribute of the datapoint. Used for CSS in barchart for the bar color. |
 
 ### Line Chart
 
@@ -93,6 +117,15 @@ To add a single series line chart to the HTML file, using HTML table format, the
   </table>
 </ec-linechart>
 ```
+
+The possible attributes of `<ec-linechart>` are the following:
+| Attribute | Description |
+|--------------|---------------------------|
+| height | Height of the chart. |
+| width | Width of the chart. |
+| id | Unique id for the chart. Used for setting the height and width of the chart, or specifying if the x axis ticks should be shown, through CSS. |
+| class | Class attribute of the chart. Used for setting the height and width of the chart, or specifying if the x axis ticks should be shown, through CSS. |
+| chart-title | Title of the chart. |
 
 ### Multiline Chart
 
@@ -145,6 +178,8 @@ To create a multiline chart with HTML table format, the following structure has 
 </ec-linechart>
 ```
 
+The attributes of this type of chart are of course the same as in the previous section (see [Line Chart](#line-chart)), as these 2 types are using the same HTML element.
+
 ### Bar Chart
 
 To add a bar chart to the HTML file, the structure shown in the Line Chart chapter (see [Line Chart](#line-chart)) has to be used.
@@ -154,7 +189,10 @@ but with the
 <ec-barchart> [...] </ec-barchart>
 ```
 
-HTML tags.
+HTML tags. To see full list of attributes, please again refer to the [Line Chart](#line-chart) section, because the attributes are exactly the same.
+
+
+### Styling With CSS
 
 ## For Developers
 
@@ -178,7 +216,7 @@ This will transpile the source files and generate the compiled JavaScript files 
 
 ## File Structure
 
-The source files for the web components are located in the `src/` directory, named `easycharts.ts`. The compiled JavaScript files are generated in the dist directory.
+The source files for the web components are located in the `src/` directory, named `easycharts.mts`.
 
 ```
 
