@@ -30,7 +30,7 @@ EasyCharts offers a way to input data in HTML table format inside the bar or lin
       <td>ÖVP</td>
       <td>28.45</td>
     </tr>
-    [...]
+    <!--Other HTML-->
   </tbody>
 </table>
 ```
@@ -57,7 +57,7 @@ If HTML tables seem too complicated, dataseries can be used. Basic example:
 <dataseries name="dataseries1">
   <datapoint> 1960,3.03 </datapoint>
   <datapoint> 1970,3.70 </datapoint>
-  [...]
+  <!--Other HTML-->
 </dataseries>
 ```
 
@@ -87,7 +87,7 @@ To add a single series line chart to the HTML file, using dataseries, the follow
   <dataseries name="dataseries1">
     <datapoint> Label1,1 </datapoint>
     <datapoint> Label2,2 </datapoint>
-    [...]
+    <!--Other HTML-->
   </dataseries>
 </ec-linechart>
 ```
@@ -113,7 +113,7 @@ To add a single series line chart to the HTML file, using HTML table format, the
         <td>Label2</td>
         <td>2</td>
       </tr>
-      [...]
+      <!--Other HTML-->
     </tbody>
   </table>
 </ec-linechart>
@@ -139,12 +139,12 @@ To create a multiline chart with dataseries, the following structure has to be u
   <dataseries name="dataseries1">
     <datapoint> Label1,1 </datapoint>
     <datapoint> Label2,2 </datapoint>
-    [...]
+    <!--Other HTML-->
   </dataseries>
   <dataseries name="dataseries2">
     <datapoint> Label1,3 </datapoint>
     <datapoint> Label2,4 </datapoint>
-    [...]
+    <!--Other HTML-->
   </dataseries>
 </ec-linechart>
 ```
@@ -173,7 +173,7 @@ To create a multiline chart with HTML table format, the following structure has 
         <td>2</td>
         <td>4</td>
       </tr>
-      [...]
+      <!--Other HTML-->
     </tbody>
   </table>
 </ec-linechart>
@@ -187,7 +187,9 @@ To add a bar chart to the HTML file, the structure shown in the Line Chart chapt
 but with the
 
 ```html
-<ec-barchart> [...] </ec-barchart>
+<ec-barchart>
+  <!--Other HTML-->
+</ec-barchart>
 ```
 
 HTML tags. To see full list of attributes, please again refer to the [Line Chart](#line-chart) section, because the attributes are exactly the same.
@@ -212,7 +214,7 @@ Table showing all currently available CSS properties:
 Example usage:
 
 ```html
-[...]
+<!--Other HTML-->
 <style>
   .mlinechart1 {
     --chart-width: 500;
@@ -225,7 +227,7 @@ Example usage:
     --color: green;
   }
 </style>
-[...]
+<!--Other HTML-->
 <ec-linechart class="mlinechart1">
   <table>
     <thead>
@@ -234,7 +236,7 @@ Example usage:
         <th id="apple">Apple</th>
       </tr>
     </thead>
-    [...]
+    <!--Other HTML-->
   </table>
 </ec-linechart>
 ```
