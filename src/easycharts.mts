@@ -28,8 +28,8 @@ class BarChart extends HTMLElement {
     // Set size, CSS has most precedence
     let width = setChartWidth(this);
     let height = setChartHeight(this);
-    const attributes = getSizeFromCss(this);
-    const showTicks = getTicksFlag(this);
+    const attributes = getSizeFromCSS(this);
+    const showTicks = getTicksFlagFromCSS(this);
     if (attributes) {
       if (attributes['height']) {
         height = attributes['height'];
@@ -176,8 +176,8 @@ class LineChart extends HTMLElement {
     // Set size, CSS has most precedence
     let width = setChartWidth(this);
     let height = setChartHeight(this);
-    const attributes = getSizeFromCss(this);
-    const showTicks = getTicksFlag(this);
+    const attributes = getSizeFromCSS(this);
+    const showTicks = getTicksFlagFromCSS(this);
     if (attributes) {
       if (attributes['height']) {
         height = attributes['height'];
@@ -355,7 +355,7 @@ function getTableDict(
           let id = value.getAttribute('id');
           let classAttr = value.getAttribute('classAttr');
           if (id || classAttr) {
-            const color: string = getColor(id, classAttr);
+            const color: string = getColorFromCSS(id, classAttr);
             if (color) {
               colorsDict[label] = color;
             } else {
@@ -376,7 +376,7 @@ function getTableDict(
             id = cells[0].getAttribute('id');
             classAttr = cells[0].getAttribute('class');
             if (id || classAttr) {
-              const color: string = getColor(id, classAttr);
+              const color: string = getColorFromCSS(id, classAttr);
               if (color) {
                 colorsDict[key] = color;
               } else {
@@ -441,7 +441,7 @@ function getDataSeriesDict(
     let id = dataSeries.getAttribute('id');
     let classAttr = dataSeries.getAttribute('class');
     if (id || classAttr) {
-      const color: string = getColor(id, classAttr);
+      const color: string = getColorFromCSS(id, classAttr);
       colorDict[dataSeriesName] = color;
     }
     let dataPointsDict = {};
@@ -458,7 +458,7 @@ function getDataSeriesDict(
       id = dataPoint.getAttribute('id');
       classAttr = dataPoint.getAttribute('class');
       if (id || classAttr) {
-        const color: string = getColor(id, classAttr);
+        const color: string = getColorFromCSS(id, classAttr);
         colorDict[dataValues[0]] = color;
       }
       dataPointsDict[dataValues[0]] = parseFloat(dataValues[1]);
@@ -466,6 +466,78 @@ function getDataSeriesDict(
     dataDict[dataSeriesName] = dataPointsDict;
   });
   return [dataDict, getAxisTitles(classObject), colorDict];
+}
+
+/**
+ * Function handling the data series mode.
+ * @param classObject - Class object of respective chart.
+ * @param chartWidth - Width of the chart.
+ * @param chartHeight - Height of the chart.
+ * @param showTicks - Flag indicating whether to show ticks on the x-axis. Default is 'true'.
+ */
+function handleDataSeriesMode(
+  classObject: LineChart | BarChart,
+  chartWidth: number,
+  chartHeight: number,
+  showTicks: string
+): void {
+  try {
+    const dictionaries = getDataSeriesDict(classObject);
+
+    if (classObject instanceof BarChart) {
+      (classObject as BarChart).drawBarChart(
+        chartWidth,
+        chartHeight,
+        dictionaries,
+        showTicks
+      );
+    } else if (classObject instanceof LineChart) {
+      (classObject as LineChart).drawLineChart(
+        chartWidth,
+        chartHeight,
+        dictionaries,
+        showTicks
+      );
+    }
+  } catch (error) {
+    console.error('[Error]', error.message);
+  }
+}
+
+/**
+ * Function handling the table mode.
+ * @param classObject - Class object of respective chart.
+ * @param chartWidth - Width of the chart.
+ * @param chartHeight - Height of the chart.
+ * @param showTicks - Flag indicating whether to show ticks on the x-axis. Default is 'true'.
+ */
+function handleTableMode(
+  classObject: LineChart | BarChart,
+  chartWidth: number,
+  chartHeight: number,
+  showTicks: string
+): void {
+  try {
+    const dictionaries = getTableDict(classObject);
+
+    if (classObject instanceof BarChart) {
+      (classObject as BarChart).drawBarChart(
+        chartWidth,
+        chartHeight,
+        dictionaries,
+        showTicks
+      );
+    } else if (classObject instanceof LineChart) {
+      (classObject as LineChart).drawLineChart(
+        chartWidth,
+        chartHeight,
+        dictionaries,
+        showTicks
+      );
+    }
+  } catch (error) {
+    console.error('[Error]', error.message);
+  }
 }
 
 /**
@@ -521,11 +593,41 @@ function isValidNumber(str: string): boolean {
 }
 
 /**
+ * Function for getting the x and y axis title names.
+ * @param classObject - Class object of respective chart.
+ * @returns Dictionary of axis titles.
+ */
+function getAxisTitles(classObject: LineChart | BarChart): {
+  [key: string]: string;
+} {
+  // Set x and y axis
+  let xAxisName: string = 'x-Axis';
+  let yAxisName: string = 'y-Axis';
+  const xAxisQuerySelector = classObject.querySelector('x-axis-title');
+  xAxisName =
+    xAxisQuerySelector && xAxisQuerySelector.innerHTML !== ''
+      ? xAxisQuerySelector.innerHTML
+      : xAxisName;
+  const yAxisQuerySelector = classObject.querySelector('y-axis-title');
+  yAxisName =
+    yAxisQuerySelector && yAxisQuerySelector.innerHTML !== ''
+      ? yAxisQuerySelector.innerHTML
+      : yAxisName;
+  let axisTitles: { [key: string]: string } = {
+    'x-axis': 'x-axis',
+    'y-axis': 'y-axis',
+  };
+  axisTitles['x-axis'] = xAxisName;
+  axisTitles['y-axis'] = yAxisName;
+  return axisTitles;
+}
+
+/**
  * Function getting the size of a chart through CSS.
  * @param classObject - Class object of respective chart.
  * @returns Dictionary with size attributes found in CSS.
  */
-function getSizeFromCss(classObject: LineChart | BarChart): {
+function getSizeFromCSS(classObject: LineChart | BarChart): {
   [key: string]: number;
 } {
   // Inner function getting the size of the chart
@@ -602,114 +704,12 @@ function getSizeFromCss(classObject: LineChart | BarChart): {
 }
 
 /**
- * Function handling the data series mode.
- * @param classObject - Class object of respective chart.
- * @param chartWidth - Width of the chart.
- * @param chartHeight - Height of the chart.
- * @param showTicks - Flag indicating whether to show ticks on the x-axis. Default is 'true'.
- */
-function handleDataSeriesMode(
-  classObject: LineChart | BarChart,
-  chartWidth: number,
-  chartHeight: number,
-  showTicks: string
-): void {
-  try {
-    const dictionaries = getDataSeriesDict(classObject);
-
-    if (classObject instanceof BarChart) {
-      (classObject as BarChart).drawBarChart(
-        chartWidth,
-        chartHeight,
-        dictionaries,
-        showTicks
-      );
-    } else if (classObject instanceof LineChart) {
-      (classObject as LineChart).drawLineChart(
-        chartWidth,
-        chartHeight,
-        dictionaries,
-        showTicks
-      );
-    }
-  } catch (error) {
-    console.error('[Error]', error.message);
-  }
-}
-
-/**
- * Function handling the table mode.
- * @param classObject - Class object of respective chart.
- * @param chartWidth - Width of the chart.
- * @param chartHeight - Height of the chart.
- * @param showTicks - Flag indicating whether to show ticks on the x-axis. Default is 'true'.
- */
-function handleTableMode(
-  classObject: LineChart | BarChart,
-  chartWidth: number,
-  chartHeight: number,
-  showTicks: string
-): void {
-  try {
-    const dictionaries = getTableDict(classObject);
-
-    if (classObject instanceof BarChart) {
-      (classObject as BarChart).drawBarChart(
-        chartWidth,
-        chartHeight,
-        dictionaries,
-        showTicks
-      );
-    } else if (classObject instanceof LineChart) {
-      (classObject as LineChart).drawLineChart(
-        chartWidth,
-        chartHeight,
-        dictionaries,
-        showTicks
-      );
-    }
-  } catch (error) {
-    console.error('[Error]', error.message);
-  }
-}
-
-/**
- * Function for getting the x and y axis title names.
- * @param classObject - Class object of respective chart.
- * @returns Dictionary of axis titles.
- */
-function getAxisTitles(classObject: LineChart | BarChart): {
-  [key: string]: string;
-} {
-  // Set x and y axis
-  let xAxisName: string = 'x-Axis';
-  let yAxisName: string = 'y-Axis';
-  const xAxisQuerySelector = classObject.querySelector('x-axis-title');
-  xAxisName =
-    xAxisQuerySelector && xAxisQuerySelector.innerHTML !== ''
-      ? xAxisQuerySelector.innerHTML
-      : xAxisName;
-  const yAxisQuerySelector = classObject.querySelector('y-axis-title');
-  yAxisName =
-    yAxisQuerySelector && yAxisQuerySelector.innerHTML !== ''
-      ? yAxisQuerySelector.innerHTML
-      : yAxisName;
-  let axisTitles: { [key: string]: string } = {
-    'x-axis': 'x-axis',
-    'y-axis': 'y-axis',
-  };
-  axisTitles['x-axis'] = xAxisName;
-  axisTitles['y-axis'] = yAxisName;
-  return axisTitles;
-}
-
-/**
  * Function for getting the color of lines or bars through CSS.
  * @param id - "id" attribute of HTML element.
  * @param classAttr - "class" attribute of HTML element.
  * @returns Found color of "id" or "class".
  */
-function getColor(id: string, classAttr: string): string {
+function getColorFromCSS(id: string, classAttr: string): string {
   // Inner function getting the color of the line or bars
   const getColorInner = (rule: CSSStyleRule): string => {
     let color: string = 'blue';
@@ -769,7 +769,7 @@ function getColor(id: string, classAttr: string): string {
  * @param classObject - Class object of respective chart.
  * @returns Flag if x axis ticks should be shown. "true" is default.
  */
-function getTicksFlag(classObject: LineChart | BarChart): string {
+function getTicksFlagFromCSS(classObject: LineChart | BarChart): string {
   // Inner function getting the ticks flag
   const getFlag = (rule: CSSStyleRule): string => {
     let ticksFlag: string = 'true';
