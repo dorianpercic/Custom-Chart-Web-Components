@@ -38,11 +38,16 @@ class BarChart extends HTMLElement {
         width = attributes['width'];
       }
     }
+    // Set chart title
+    let chartTitle = this.getAttribute('chart-title');
+    if (!chartTitle) {
+      chartTitle = 'chartTitle';
+    }
 
     if (this.querySelector('table')) {
-      handleTableMode(this, width, height, showTicks);
+      handleTableMode(this, width, height, showTicks, chartTitle);
     } else if (this.querySelector('dataseries')) {
-      handleDataSeriesMode(this, width, height, showTicks);
+      handleDataSeriesMode(this, width, height, showTicks, chartTitle);
     } else {
       console.error(
         '[Error] Invalid chart structure: No table or data series found'
@@ -57,6 +62,7 @@ class BarChart extends HTMLElement {
    * @param dictionaries - Array of 3 dictionaries: First consisting of the datapoints,
    * second of the x and y axis titles and the third of the colors.
    * @param showTicks - Flag indicating whether to show ticks on the x-axis. Default is 'true'.
+   * @param chartTitle - Title of the chart.
    */
   drawBarChart(
     width: number,
@@ -66,7 +72,8 @@ class BarChart extends HTMLElement {
       { [key: string]: string },
       { [key: string]: string }
     ],
-    showTicks: string = 'true'
+    showTicks: string = 'true',
+    chartTitle: string = 'chartTitle'
   ): void {
     const margin = {
       top: height * 0.2,
@@ -100,6 +107,14 @@ class BarChart extends HTMLElement {
         ? axisBottom(xScale)
         : axisBottom(xScale).tickValues([]);
     const yAxis = axisLeft(yScale).ticks(5);
+
+    barChartSvg
+      .append('text')
+      .attr('id', 'chart-title')
+      .attr('text-anchor', 'middle')
+      .attr('x', width / 2)
+      .attr('y', margin.top / 2)
+      .text(chartTitle);
 
     barChartSvg
       .append('g')
@@ -186,11 +201,16 @@ class LineChart extends HTMLElement {
         width = attributes['width'];
       }
     }
+    // Set chart title
+    let chartTitle = this.getAttribute('chart-title');
+    if (!chartTitle) {
+      chartTitle = 'chartTitle';
+    }
 
     if (this.querySelector('table')) {
-      handleTableMode(this, width, height, showTicks);
+      handleTableMode(this, width, height, showTicks, chartTitle);
     } else if (this.querySelector('dataseries')) {
-      handleDataSeriesMode(this, width, height, showTicks);
+      handleDataSeriesMode(this, width, height, showTicks, chartTitle);
     } else {
       console.error(
         '[Error] Invalid chart structure: No table or data series found'
@@ -205,6 +225,7 @@ class LineChart extends HTMLElement {
    * @param dictionaries - Array of 3 dictionaries: First consisting of the datapoints,
    * second of the x and y axis titles and the third of the colors.
    * @param showTicks - Flag indicating whether to show ticks on the x-axis. Default is 'true'.
+   * @param chartTitle - Title of the chart.
    */
   drawLineChart(
     width: number,
@@ -214,7 +235,8 @@ class LineChart extends HTMLElement {
       { [key: string]: string },
       { [key: string]: string }
     ],
-    showTicks: string
+    showTicks: string = 'true',
+    chartTitle: string = 'chartTitle'
   ): void {
     const margin = {
       top: height * 0.2,
@@ -280,6 +302,14 @@ class LineChart extends HTMLElement {
         : axisBottom(xScale).tickValues([]);
 
     lineChartSvg
+      .append('text')
+      .attr('id', 'chart-title')
+      .attr('text-anchor', 'middle')
+      .attr('x', width / 2)
+      .attr('y', margin.top / 2)
+      .text(chartTitle);
+
+    lineChartSvg
       .append('g')
       .attr('transform', `translate(0, ${height - margin.bottom})`)
       .attr('id', 'x-axis')
@@ -310,6 +340,7 @@ class LineChart extends HTMLElement {
       .attr('dy', '.75em')
       .attr('transform', 'rotate(-90)')
       .text(axisTitles['y-axis']);
+
     this.shadowRoot?.appendChild(lineChartSvg.node());
   }
 }
@@ -474,12 +505,14 @@ function getDataSeriesDict(
  * @param chartWidth - Width of the chart.
  * @param chartHeight - Height of the chart.
  * @param showTicks - Flag indicating whether to show ticks on the x-axis. Default is 'true'.
+ * @param chartTitle - Title of the chart.
  */
 function handleDataSeriesMode(
   classObject: LineChart | BarChart,
   chartWidth: number,
   chartHeight: number,
-  showTicks: string
+  showTicks: string,
+  chartTitle: string
 ): void {
   try {
     const dictionaries = getDataSeriesDict(classObject);
@@ -489,14 +522,16 @@ function handleDataSeriesMode(
         chartWidth,
         chartHeight,
         dictionaries,
-        showTicks
+        showTicks,
+        chartTitle
       );
     } else if (classObject instanceof LineChart) {
       (classObject as LineChart).drawLineChart(
         chartWidth,
         chartHeight,
         dictionaries,
-        showTicks
+        showTicks,
+        chartTitle
       );
     }
   } catch (error) {
@@ -510,12 +545,14 @@ function handleDataSeriesMode(
  * @param chartWidth - Width of the chart.
  * @param chartHeight - Height of the chart.
  * @param showTicks - Flag indicating whether to show ticks on the x-axis. Default is 'true'.
+ * @param chartTitle - Title of the chart.
  */
 function handleTableMode(
   classObject: LineChart | BarChart,
   chartWidth: number,
   chartHeight: number,
-  showTicks: string
+  showTicks: string,
+  chartTitle: string
 ): void {
   try {
     const dictionaries = getTableDict(classObject);
@@ -525,14 +562,16 @@ function handleTableMode(
         chartWidth,
         chartHeight,
         dictionaries,
-        showTicks
+        showTicks,
+        chartTitle
       );
     } else if (classObject instanceof LineChart) {
       (classObject as LineChart).drawLineChart(
         chartWidth,
         chartHeight,
         dictionaries,
-        showTicks
+        showTicks,
+        chartTitle
       );
     }
   } catch (error) {
