@@ -7,7 +7,7 @@ import {
   create,
   max,
   line,
-  color,
+  ticks,
 } from 'd3';
 
 /** Class for bar chart web component. */
@@ -29,6 +29,7 @@ class BarChart extends HTMLElement {
     let width = setChartWidth(this);
     let height = setChartHeight(this);
     const attributes = getSizeFromCss(this);
+    const showTicks = getTicksFlag(this);
     if (attributes) {
       if (attributes['height']) {
         height = attributes['height'];
@@ -39,9 +40,9 @@ class BarChart extends HTMLElement {
     }
 
     if (this.querySelector('table')) {
-      handleTableMode(this, width, height);
+      handleTableMode(this, width, height, showTicks);
     } else if (this.querySelector('dataseries')) {
-      handleDataSeriesMode(this, width, height);
+      handleDataSeriesMode(this, width, height, showTicks);
     } else {
       console.error(
         '[Error] Invalid chart structure: No table or data series found'
@@ -63,7 +64,8 @@ class BarChart extends HTMLElement {
       { [key: string]: { [innerKey: string]: number } },
       { [key: string]: string },
       { [key: string]: string }
-    ]
+    ],
+    showTicks: string = 'true'
   ): void {
     const margin = {
       top: height * 0.2,
@@ -72,7 +74,7 @@ class BarChart extends HTMLElement {
       right: width * 0.2,
     };
     const dataDict = dictionaries[0];
-    const headers = dictionaries[1];
+    const axisTitles = dictionaries[1];
     const colors = dictionaries[2];
     const dataSeriesKey = Object.keys(dataDict)[0]; // Only one dataseries possible for bar chart
     const dataArray = getDictValues(dataDict[dataSeriesKey]);
@@ -92,7 +94,10 @@ class BarChart extends HTMLElement {
       .domain([0, max(dataArray) || 0])
       .range([chartHeight, 0]);
 
-    const xAxis = axisBottom(xScale);
+    const xAxis =
+      showTicks === 'true'
+        ? axisBottom(xScale)
+        : axisBottom(xScale).tickValues([]);
     const yAxis = axisLeft(yScale).ticks(5);
 
     barChartSvg
@@ -123,16 +128,16 @@ class BarChart extends HTMLElement {
       .attr('height', (d) => chartHeight - yScale(d))
       .attr('fill', (_, i) => colors[Object.keys(dataDict[dataSeriesKey])[i]]);
 
-    // X-Label
+    // X labels
     barChartSvg
       .append('text')
       .attr('id', 'x-label')
       .attr('text-anchor', 'end')
       .attr('x', width - margin.right)
       .attr('y', height - margin.bottom + 40)
-      .text(headers['x-axis']);
+      .text(axisTitles['x-axis']);
 
-    // Y-Label
+    // Y labels
     barChartSvg
       .append('text')
       .attr('id', 'y-label')
@@ -141,7 +146,7 @@ class BarChart extends HTMLElement {
       .attr('y', margin.left - 60)
       .attr('dy', '.75em')
       .attr('transform', 'rotate(-90)')
-      .text(headers['y-axis']);
+      .text(axisTitles['y-axis']);
 
     this.shadowRoot?.appendChild(barChartSvg.node());
   }
@@ -170,6 +175,7 @@ class LineChart extends HTMLElement {
     let width = setChartWidth(this);
     let height = setChartHeight(this);
     const attributes = getSizeFromCss(this);
+    const showTicks = getTicksFlag(this);
     if (attributes) {
       if (attributes['height']) {
         height = attributes['height'];
@@ -180,9 +186,9 @@ class LineChart extends HTMLElement {
     }
 
     if (this.querySelector('table')) {
-      handleTableMode(this, width, height);
+      handleTableMode(this, width, height, showTicks);
     } else if (this.querySelector('dataseries')) {
-      handleDataSeriesMode(this, width, height);
+      handleDataSeriesMode(this, width, height, showTicks);
     } else {
       console.error(
         '[Error] Invalid chart structure: No table or data series found'
@@ -197,7 +203,6 @@ class LineChart extends HTMLElement {
    * @param {[ { [key: string]: { [innerKey: string]: number } }, { [key: string]: string } ]} dictionaries: 2 dictionaries, 1 consisting of datapoints
    * and the other of the x and y axis titles.
    */
-
   drawLineChart(
     width: number,
     height: number,
@@ -205,7 +210,8 @@ class LineChart extends HTMLElement {
       { [key: string]: { [innerKey: string]: number } },
       { [key: string]: string },
       { [key: string]: string }
-    ]
+    ],
+    showTicks: string
   ): void {
     const margin = {
       top: height * 0.2,
@@ -214,7 +220,7 @@ class LineChart extends HTMLElement {
       right: width * 0.2,
     };
     const data = dictionaries[0];
-    const headers = dictionaries[1];
+    const axisTitles = dictionaries[1];
     const colors = dictionaries[2];
 
     const xScale = scalePoint()
@@ -249,13 +255,32 @@ class LineChart extends HTMLElement {
         .attr('fill', 'none')
         .attr('stroke', colors[key])
         .attr('id', key);
+
+      if (Object.entries(data).length > 1) {
+        // Get the last point of the line
+        const lastPoint = Object.entries(lineData).slice(-1)[0];
+        const [lastX, lastY] = lastPoint;
+
+        // Display key beside the end of the line
+        lineChartSvg
+          .append('text')
+          .attr('class', 'line-key')
+          .attr('x', xScale(lastX) + 10)
+          .attr('y', yScale(lastY) + 5)
+          .attr('fill', colors[key])
+          .text(key);
+      }
     });
+    const xAxis =
+      showTicks === 'true'
+        ? axisBottom(xScale)
+        : axisBottom(xScale).tickValues([]);
 
     lineChartSvg
       .append('g')
       .attr('transform', `translate(0, ${height - margin.bottom})`)
       .attr('id', 'x-axis')
-      .call(axisBottom(xScale));
+      .call(xAxis);
 
     lineChartSvg
       .append('g')
@@ -263,16 +288,16 @@ class LineChart extends HTMLElement {
       .attr('id', 'y-axis')
       .call(axisLeft(yScale));
 
-    // x label
+    // X labels
     lineChartSvg
       .append('text')
       .attr('id', 'x-label')
       .attr('text-anchor', 'end')
       .attr('x', width - margin.right)
       .attr('y', height - margin.bottom + 40)
-      .text(headers['x-axis']);
+      .text(axisTitles['x-axis']);
 
-    // y label
+    // Y labels
     lineChartSvg
       .append('text')
       .attr('id', 'y-label')
@@ -281,8 +306,7 @@ class LineChart extends HTMLElement {
       .attr('y', margin.left - 60)
       .attr('dy', '.75em')
       .attr('transform', 'rotate(-90)')
-      .text(headers['y-axis']);
-
+      .text(axisTitles['y-axis']);
     this.shadowRoot?.appendChild(lineChartSvg.node());
   }
 }
@@ -499,7 +523,8 @@ function isValidNumber(str: string): boolean {
 function handleDataSeriesMode(
   classObject: LineChart | BarChart,
   chartWidth: number,
-  chartHeight: number
+  chartHeight: number,
+  showTicks: string
 ): void {
   try {
     const dictionaries = getDataSeriesDict(classObject);
@@ -508,13 +533,15 @@ function handleDataSeriesMode(
       (classObject as BarChart).drawBarChart(
         chartWidth,
         chartHeight,
-        dictionaries
+        dictionaries,
+        showTicks
       );
     } else if (classObject instanceof LineChart) {
       (classObject as LineChart).drawLineChart(
         chartWidth,
         chartHeight,
-        dictionaries
+        dictionaries,
+        showTicks
       );
     }
   } catch (error) {
@@ -530,7 +557,7 @@ function handleDataSeriesMode(
 function getSizeFromCss(classObject: LineChart | BarChart): {
   [key: string]: number;
 } {
-  // Inner function setting the size of the chart
+  // Inner function getting the size of the chart
   const getSize = (rule: CSSStyleRule): { [key: string]: number } => {
     let attributes: { [key: string]: number } = {};
     let chartWidth: number = undefined;
@@ -609,7 +636,8 @@ function getSizeFromCss(classObject: LineChart | BarChart): {
 function handleTableMode(
   classObject: LineChart | BarChart,
   chartWidth: number,
-  chartHeight: number
+  chartHeight: number,
+  showTicks: string
 ): void {
   try {
     const dictionaries = getTableDict(classObject);
@@ -618,13 +646,15 @@ function handleTableMode(
       (classObject as BarChart).drawBarChart(
         chartWidth,
         chartHeight,
-        dictionaries
+        dictionaries,
+        showTicks
       );
     } else if (classObject instanceof LineChart) {
       (classObject as LineChart).drawLineChart(
         chartWidth,
         chartHeight,
-        dictionaries
+        dictionaries,
+        showTicks
       );
     }
   } catch (error) {
@@ -661,14 +691,13 @@ function getAxisTitles(classObject: LineChart | BarChart): {
   return axisTitles;
 }
 
-
 /** Function for getting the color through CSS.
  * @param {id: string}: "id" of HTML element.
  * @param {classAttr: string}: "class" of HTML element.
  * @returns {string} color: Found color of id or class.
  */
 function getColor(id: string, classAttr: string): string {
-  // Inner function setting the color of the line or bars
+  // Inner function getting the color of the line or bars
   const getColorInner = (rule: CSSStyleRule): string => {
     let color: string = 'blue';
     const styleDeclaration = rule.style;
@@ -720,4 +749,69 @@ function getColor(id: string, classAttr: string): string {
     }
   }
   return color;
+}
+
+/** Function for getting the ticks flag through CSS.
+ * @param {classObject: LineChart | BarChart}: Class object of respective chart.
+ * @returns {string} flag: Flag if x axis ticks should be shown. "true" is default.
+ */
+function getTicksFlag(classObject: LineChart | BarChart): string {
+  // Inner function getting the ticks flag
+  const getFlag = (rule: CSSStyleRule): string => {
+    let ticksFlag: string = 'true';
+    const styleDeclaration = rule.style;
+    if (styleDeclaration.getPropertyValue('--show-ticks')) {
+      ticksFlag = styleDeclaration.getPropertyValue('--show-ticks');
+    }
+    return ticksFlag;
+  };
+
+  let flag: string = 'true';
+  let classAttr = classObject.getAttribute('class');
+  let idAttr = classObject.getAttribute('id');
+  if (document.styleSheets.length !== 0) {
+    try {
+      for (const stylesheet of document.styleSheets) {
+        if (stylesheet.cssRules) {
+          for (const rule of stylesheet.cssRules) {
+            // Id has most precedence
+            if (
+              rule instanceof CSSStyleRule &&
+              rule.selectorText === `#${idAttr}`
+            ) {
+              flag = getFlag(rule);
+              break;
+            } else if (
+              rule instanceof CSSStyleRule &&
+              rule.selectorText === `.${classAttr}`
+            ) {
+              flag = getFlag(rule);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      const styleSheet = Array.from(document.styleSheets).find(
+        (sheet) => sheet.ownerNode instanceof HTMLStyleElement
+      ) as CSSStyleSheet;
+      if (styleSheet) {
+        const rules = Array.from(styleSheet.cssRules);
+        for (const rule of rules) {
+          if (
+            rule instanceof CSSStyleRule &&
+            rule.selectorText === `#${idAttr}`
+          ) {
+            flag = getFlag(rule);
+            break;
+          } else if (
+            rule instanceof CSSStyleRule &&
+            rule.selectorText === `.${classAttr}`
+          ) {
+            flag = getFlag(rule);
+          }
+        }
+      }
+    }
+  }
+  return flag;
 }
