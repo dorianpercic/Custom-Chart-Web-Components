@@ -62,6 +62,7 @@ If HTML tables seem too complicated, dataseries can be used. Basic example:
 ```
 
 The label is on the left of the comma seperator (`,`) and on the right of the comma seperator there is the value of the datapoint. Furthermore, each dataseries has to have a name, using the `name` attribute. <br>
+
 The following attributes are present in a `<dataseries>` element:
 | Attribute | Description |
 |--------------|---------------------------|
