@@ -10,6 +10,12 @@
         --chart-width: 800;
         --chart-height: 300;
       }
+      #salesTeam {
+        --color: red;
+      }
+      #sumOfSales {
+        --color: blue;
+      }
     </style>
   </head>
 
@@ -18,13 +24,13 @@
     <ec-linechart class="mlinechart1">
       <x-axis-title>Time</x-axis-title>
       <y-axis-title>Profit in Thousands(€)</y-axis-title>
-      <dataseries name="SalesTeam">
+      <dataseries name="SalesTeam" id="salesTeam">
         <datapoint> 6AM,5 </datapoint>
         <datapoint> 12PM,10 </datapoint>
         <datapoint> 6PM,15 </datapoint>
         <datapoint> 12AM,1 </datapoint>
       </dataseries>
-      <dataseries name="SumOfSales">
+      <dataseries name="SumOfSales" id="sumOfSales">
         <datapoint> 6AM,10 </datapoint>
         <datapoint> 12PM,15 </datapoint>
         <datapoint> 6PM,20 </datapoint>

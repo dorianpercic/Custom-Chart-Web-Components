@@ -326,7 +326,6 @@ function getTableDict(
           let label: string = value.textContent?.trim();
           let id = value.getAttribute('id');
           let classAttr = value.getAttribute('classAttr');
-          // Color logic
           if (id || classAttr) {
             const color: string = getColor(id, classAttr);
             if (color) {
@@ -403,17 +402,17 @@ function getDataSeriesDict(
   let dataDict: { [key: string]: { [innerKey: string]: number } } = {};
   let colorDict: { [key: string]: string } = {};
 
-  dataSeriesElement.forEach(function (value) {
-    const dataPointElements = value.querySelectorAll('datapoint');
-    let dataSeriesName: string = value.getAttribute('name');
+  dataSeriesElement.forEach(function (dataSeries) {
+    const dataPointElements = dataSeries.querySelectorAll('datapoint');
+    let dataSeriesName: string = dataSeries.getAttribute('name');
     if (!dataSeriesName) {
       throw new Error('No "name" attribute in dataseries');
     }
     if (!dataPointElements.length) {
       throw new Error('No <datapoint> elements found inside <dataseries>');
     }
-    let id = value.getAttribute('id');
-    let classAttr = value.getAttribute('class');
+    let id = dataSeries.getAttribute('id');
+    let classAttr = dataSeries.getAttribute('class');
     if (id || classAttr) {
       const color: string = getColor(id, classAttr);
       colorDict[dataSeriesName] = color;
@@ -452,7 +451,7 @@ function getDictValues(dict: { [key: string]: number }): number[] {
 }
 
 /**
- * Function setting the chart width.
+ * Function setting the chart width through HTML attribute.
  * @param {classObject: LineChart | BarChart}: Class object of respective chart.
  * @returns {number}: Return width of chart. Default set to 500.
  */
@@ -469,7 +468,7 @@ function setChartWidth(classObject): number {
 }
 
 /**
- * Function setting the chart height.
+ * Function setting the chart height through HTML attribute.
  * @param {classObject: LineChart | BarChart}: Class object of respective chart.
  * @returns {number}: Return height of chart. Default set to 300.
  */
@@ -524,9 +523,9 @@ function handleDataSeriesMode(
 }
 
 /**
- * Function checking if input is a valid number.
+ * Function getting the size of a chart through CSS.
  * @param {classObject: LineChart | BarChart}: Class object of respective chart.
- * @returns {{[key: string]: number}}: Return size dictionary of numbers: "height" -> int, "width" -> int.
+ * @returns {{[key: string]: number}}: Return "size" dictionary of numbers: "height" -> int, "width" -> int.
  */
 function getSizeFromCss(classObject: LineChart | BarChart): {
   [key: string]: number;
@@ -557,7 +556,6 @@ function getSizeFromCss(classObject: LineChart | BarChart): {
   let attributes: { [key: string]: number } = {};
   let classAttr = classObject.getAttribute('class');
   let idAttr = classObject.getAttribute('id');
-  console.log(document.styleSheets);
   if (document.styleSheets.length !== 0) {
     try {
       for (const stylesheet of document.styleSheets) {
@@ -634,7 +632,7 @@ function handleTableMode(
   }
 }
 
-/** Function for drawing the chart using HTML table.
+/** Function for getting the x and y axis title names.
  * @param {classObject: LineChart | BarChart}: Class object of respective chart.
  * @returns {{[key:string]: string}} axisTitles: Dictionary of axis titles.
  */
@@ -663,6 +661,12 @@ function getAxisTitles(classObject: LineChart | BarChart): {
   return axisTitles;
 }
 
+
+/** Function for getting the color through CSS.
+ * @param {id: string}: "id" of HTML element.
+ * @param {classAttr: string}: "class" of HTML element.
+ * @returns {string} color: Found color of id or class.
+ */
 function getColor(id: string, classAttr: string): string {
   // Inner function setting the color of the line or bars
   const getColorInner = (rule: CSSStyleRule): string => {

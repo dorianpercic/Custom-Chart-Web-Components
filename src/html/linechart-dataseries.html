@@ -10,6 +10,9 @@
         --chart-width: 1000;
         --chart-height: 500;
       }
+      #dataseries1 {
+        --color: red;
+      }
     </style>
   </head>
 
@@ -18,7 +21,7 @@
     <ec-linechart class="linechart1">
       <x-axis-title>Year</x-axis-title>
       <y-axis-title>Population in Million</y-axis-title>
-      <dataseries name="dataseries1">
+      <dataseries name="dataseries1" id="dataseries1">
         <datapoint> 1960,3.03 </datapoint>
         <datapoint> 1970,3.7 </datapoint>
         <datapoint> 1980,4.43 </datapoint>
