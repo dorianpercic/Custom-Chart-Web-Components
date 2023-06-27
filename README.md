@@ -35,23 +35,23 @@ EasyCharts offers a way to input data in HTML table format inside the bar or lin
 </table>
 ```
 
-The first `<td>` inside `<tbody>` represents the label of the datapoint and the following `<td>` elements are the values of the datapoint.
+The first `<td>` inside `<tbody>` represents the label of the data point and the following `<td>` elements are the values of the data point.
 
 The following attributes are present in a `<th>` element:
 | Attribute | Description |
 |--------------|---------------------------|
-| id | Unique id for dataseries represented in `<th>`. Used for CSS in linechart for the line color. |
-| class | Class attribute of dataseries in `<th>`. Used for CSS in linechart for the line color. |
+| id | Unique id for data series represented in `<th>`. Used for CSS in linechart for the line color. |
+| class | Class attribute of data series in `<th>`. Used for CSS in linechart for the line color. |
 
 The following attributes are present in a `<td>` element:
 | Attribute | Description |
 |--------------|---------------------------|
-| id | Unique id for datapoint represented in `<td>`. Used for CSS in barchart for the bar color. |
-| class | Class attribute of datapoint in `<td>`. Used for CSS in barchart for the bar color. |
+| id | Unique id for data point represented in `<td>`. Used for CSS in barchart for the bar color. |
+| class | Class attribute of data point in `<td>`. Used for CSS in barchart for the bar color. |
 
-#### Dataseries
+#### Data Series
 
-If HTML tables seem too complicated, dataseries can be used. Basic example:
+If HTML tables seem too complicated, data series can be used. Basic example:
 
 ```html
 <dataseries name="dataseries1">
@@ -61,24 +61,24 @@ If HTML tables seem too complicated, dataseries can be used. Basic example:
 </dataseries>
 ```
 
-The label is on the left of the comma seperator (`,`) and on the right of the comma seperator there is the value of the datapoint. Furthermore, each dataseries has to have a name, using the `name` attribute.
+The label is on the left of the comma seperator (`,`) and on the right of the comma seperator there is the value of the data point. Furthermore, each data series has to have a name, using the `name` attribute.
 
 The following attributes are present in a `<dataseries>` element:
 | Attribute | Description |
 |--------------|---------------------------|
-| name | Name of the dataseries. Necessary for the internal data structure. In multiline chart it represents the line name. |
-| id | Unique id for dataseries. Used for CSS in linechart for the line color. |
-| class | Class attribute of the dataseries. Used for CSS in linechart for the line color. |
+| name | Name of the data series. Necessary for the internal data structure. In multiline chart it represents the line name. |
+| id | Unique id for data series. Used for CSS in linechart for the line color. |
+| class | Class attribute of the data series. Used for CSS in linechart for the line color. |
 
 The following attributes are present in a `<datapoint>` element:
 | Attribute | Description |
 |--------------|---------------------------|
-| id | Unique id for datapoint. Used for CSS in barchart for the bar color. |
-| class | Class attribute of the datapoint. Used for CSS in barchart for the bar color. |
+| id | Unique id for data point. Used for CSS in barchart for the bar color. |
+| class | Class attribute of the data point. Used for CSS in barchart for the bar color. |
 
 ### Line Chart
 
-To add a single series line chart to the HTML file, using dataseries, the following structure has to be used:
+To add a single series line chart to the HTML file, using data series, the following structure has to be used:
 
 ```html
 <ec-linechart chart-title="ChartTitle">
@@ -130,7 +130,7 @@ The possible attributes of `<ec-linechart>` are the following:
 
 ### Multiline Chart
 
-To create a multiline chart with dataseries, the following structure has to be used:
+To create a multiline chart with data series, the following structure has to be used:
 
 ```html
 <ec-linechart chart-title="ChartTitle">
@@ -206,7 +206,7 @@ To see which CSS property belongs to which element look for the tables in the pr
 Table showing all currently available CSS properties:
 | Property | Description |
 |--------------|---------------------------|
-| --color | Set color of dataseries/datapoint. |
+| --color | Set color of data series/data point. |
 | --chart-height | Set height of the chart. |
 | --chart-width | Set width of the chart. |
 | --show-ticks | Flag either `true` or `false` for specifying if x axis ticks should be shown. Default is `true`. |
@@ -219,6 +219,7 @@ Example usage:
   .mlinechart1 {
     --chart-width: 500;
     --chart-height: 300;
+    --show-ticks; false;
   }
   #samsung {
     --color: blue;
@@ -240,6 +241,14 @@ Example usage:
   </table>
 </ec-linechart>
 ```
+
+### Other HTML Elements
+There are 2 additional HTML elements, which are needed for setting the x and y axis titles:
+
+- `<x-axis-title> X Axis Title </x-axis-title>`
+- `<y-axis-title> Y Axis Title </y-axis-title>`
+
+These are valid when using the table mode, as well as when using the data series mode.
 
 ## For Developers
 
