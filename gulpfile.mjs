@@ -26,31 +26,17 @@ function serve() {
   return Command.execute('npm run serve');
 }
 
-gulp.task('copy-linechart', async function () {
+gulp.task('copy-examples', async function () {
   gulp
-    .src('src/examples/linechart/**/*')
-    .pipe(gulp.dest('dist/linechart/examples'));
-});
-
-gulp.task('copy-barchart', async function () {
-  gulp
-    .src('src/examples/barchart/**/*')
-    .pipe(gulp.dest('dist/barchart/examples'));
-});
-
-gulp.task('copy-multilinechart', async function () {
-  gulp
-    .src('src/examples/multilinechart/**/*')
-    .pipe(gulp.dest('dist/multilinechart/examples'));
+    .src('src/examples/**/*')
+    .pipe(gulp.dest('dist/examples'));
 });
 
 // Default gulp task [npx gulp]
 gulp.task(
   'default',
   gulp.series(
-    'copy-linechart',
-    'copy-barchart',
-    'copy-multilinechart',
+    'copy-examples',
     rollup,
     serve
   )
