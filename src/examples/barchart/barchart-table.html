@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Bar Chart</title>
+    <script src="./easycharts.js" defer></script>
+    <!--External stylesheet only possible if used with server (npx gulp)!-->
+    <!-- <link rel="stylesheet" href="./style.css"> -->
+    <style>
+      .barchart1 {
+        --chart-width: 500;
+        --chart-height: 300;
+      }
+      #spoe {
+        --color: red;
+      }
+      #oevp {
+        --color: black;
+      }
+      #fpoe {
+        --color: blue;
+      }
+      #gruene {
+        --color: green;
+      }
+      #kpoe {
+        --color: darkred;
+      }
+      #neos {
+        --color: pink;
+      }
+      #frank {
+        --color: yellow;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Bar Chart Example[Table]</h1>
+    <ec-barchart
+      class="barchart1"
+      chart-title="Styrian Election Results in 2015">
+      <x-axis-title> Party </x-axis-title>
+      <y-axis-title> Percent </y-axis-title>
+      <table>
+        <thead>
+          <tr>
+            <th>Party Results</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="spoe">SPÖ</td>
+            <td>29.29</td>
+          </tr>
+          <tr>
+            <td id="oevp">ÖVP</td>
+            <td>28.45</td>
+          </tr>
+          <tr>
+            <td id="fpoe">FPÖ</td>
+            <td>26.76</td>
+          </tr>
+          <tr>
+            <td id="gruene">Grüne</td>
+            <td>6.68</td>
+          </tr>
+          <tr>
+            <td id="kpoe">KPÖ</td>
+            <td>4.22</td>
+          </tr>
+          <tr>
+            <td id="neos">Neos</td>
+            <td>2.64</td>
+          </tr>
+          <tr>
+            <td id="frank">Frank</td>
+            <td>1.74</td>
+          </tr>
+        </tbody>
+      </table>
+    </ec-barchart>
+  </body>
+</html>

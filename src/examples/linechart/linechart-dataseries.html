@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Line Chart</title>
+    <script src="./easycharts.js" defer></script>
+    <style>
+      .linechart1 {
+        --chart-width: 1000;
+        --chart-height: 500;
+        --show-ticks: true;
+      }
+      #dataseries1 {
+        --color: red;
+      }
+    </style>
+    <!--External stylesheet only possible if used with server (npx gulp)!-->
+    <!-- <link rel="stylesheet" href="./style.css"> -->
+  </head>
+
+  <body>
+    <h1>Line Chart Example[Dataseries]</h1>
+    <ec-linechart class="linechart1" chart-title="Population Growth: 1960-2010">
+      <x-axis-title>Year</x-axis-title>
+      <y-axis-title>Population in Million</y-axis-title>
+      <dataseries name="dataseries1" id="dataseries1">
+        <datapoint> 1960,3.03 </datapoint>
+        <datapoint> 1970,3.7 </datapoint>
+        <datapoint> 1980,4.43 </datapoint>
+        <datapoint> 1990,5.28 </datapoint>
+        <datapoint> 2000,6.08 </datapoint>
+        <datapoint> 2010,6.87 </datapoint>
+      </dataseries>
+    </ec-linechart>
+  </body>
+</html>

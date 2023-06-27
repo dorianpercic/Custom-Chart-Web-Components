@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Line Chart</title>
+    <script src="./easycharts.js" defer></script>
+    <style>
+      .linechart1 {
+        --chart-width: 500;
+        --chart-height: 300;
+      }
+      #samsung {
+        --color: blue;
+      }
+    </style>
+    <!--External stylesheet only possible if used with server (npx gulp)!-->
+    <!-- <link rel="stylesheet" href="./style.css"> -->
+  </head>
+
+  <body>
+    <h1>Line Chart Example[Table]</h1>
+    <ec-linechart class="linechart1" chart-title="Profits of Samsung">
+      <x-axis-title>Time</x-axis-title>
+      <y-axis-title>Profit in Thousands(€)</y-axis-title>
+      <table>
+        <thead>
+          <tr>
+            <th id="samsung">Samsung</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>6AM</td>
+            <td>5</td>
+          </tr>
+          <tr>
+            <td>12PM</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td>6PM</td>
+            <td>15</td>
+          </tr>
+          <tr>
+            <td>12AM</td>
+            <td>1</td>
+          </tr>
+        </tbody>
+      </table>
+    </ec-linechart>
+  </body>
+</html>

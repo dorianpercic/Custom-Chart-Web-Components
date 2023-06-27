@@ -1,0 +1,14 @@
+/*Change height and width of barchart using .linechart1 class*/
+.linechart1 {
+  --chart-width: 1000;
+  --chart-height: 500;
+  --show-ticks: true;
+}
+
+/*Change line color of linechart using #some_id*/
+#dataseries1 {
+  --color: red;
+}
+#samsung {
+  --color: blue;
+}

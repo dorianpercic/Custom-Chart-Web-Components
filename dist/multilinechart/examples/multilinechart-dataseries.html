@@ -3,20 +3,21 @@
   <head>
     <meta charset="utf-8" />
     <title>Multiline Chart</title>
-    <script src="../../easycharts.js" defer></script>
+    <script src="./easycharts.js" defer></script>
     <style>
-      /* Place your CSS styles here */
       .mlinechart1 {
-        --chart-width: 800;
+        --chart-width: 500;
         --chart-height: 300;
       }
-      #salesTeam {
-        --color: red;
-      }
-      #sumOfSales {
+      #samsung {
         --color: blue;
       }
+      #apple {
+        --color: green;
+      }
     </style>
+    <!--External stylesheet only possible if used with server (npx gulp)!-->
+    <!-- <link rel="stylesheet" href="./style.css"> -->
   </head>
 
   <body>
@@ -24,13 +25,13 @@
     <ec-linechart class="mlinechart1" chart-title="Profits: Apple vs Samsung">
       <x-axis-title>Time</x-axis-title>
       <y-axis-title>Profit in Thousands(€)</y-axis-title>
-      <dataseries name="SalesTeam" id="salesTeam">
+      <dataseries name="Samsung" id="samsung">
         <datapoint> 6AM,5 </datapoint>
         <datapoint> 12PM,10 </datapoint>
         <datapoint> 6PM,15 </datapoint>
         <datapoint> 12AM,1 </datapoint>
       </dataseries>
-      <dataseries name="SumOfSales" id="sumOfSales">
+      <dataseries name="Apple" id="apple">
         <datapoint> 6AM,10 </datapoint>
         <datapoint> 12PM,15 </datapoint>
         <datapoint> 6PM,20 </datapoint>

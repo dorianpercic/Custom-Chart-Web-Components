@@ -1,6 +1,6 @@
 # EasyCharts: HTML Chart Elements with Web Components
 
-Custom web components for creating SVG charts. The project includes two types of charts: line chart, multiline chart and bar chart.
+Custom web components for creating SVG charts. The project includes three types of charts: line chart, multiline chart and bar chart.
 
 ## Usage
 
@@ -259,11 +259,9 @@ build tool. To build the project, run the following command in the project root 
 > `npx gulp`
 
 This will transpile the source files and generate the
-compiled JavaScript files for the line chart and bar chart. They can then be located in the repsective folder in the `dist/` directory.
+JavaScript file.
 
-## File Structure The
-
-source files for the web components are located in the `src/` directory, named `easycharts.mts`.
+## Project File-Structure
 
 ## License
 

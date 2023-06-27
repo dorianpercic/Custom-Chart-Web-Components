@@ -340,7 +340,7 @@ class LineChart extends HTMLElement {
       .attr('dy', '.75em')
       .attr('transform', 'rotate(-90)')
       .text(axisTitles['y-axis']);
-
+      
     this.shadowRoot?.appendChild(lineChartSvg.node());
   }
 }

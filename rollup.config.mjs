@@ -5,7 +5,7 @@ export default [
   {
     input: ['src/easycharts.mts'],
     output: {
-      dir: 'dist/linechart/esm',
+      dir: 'dist/linechart',
       format: 'esm',
     },
     plugins: [
@@ -18,7 +18,20 @@ export default [
   {
     input: ['src/easycharts.mts'],
     output: {
-      dir: 'dist/barchart/esm',
+      dir: 'dist/barchart',
+      format: 'esm',
+    },
+    plugins: [
+      resolve(),
+      typescript({
+        tsconfig: './tsconfig.json',
+      }),
+    ],
+  },
+  {
+    input: ['src/easycharts.mts'],
+    output: {
+      dir: 'dist/multilinechart',
       format: 'esm',
     },
     plugins: [

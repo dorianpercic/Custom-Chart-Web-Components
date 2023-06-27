@@ -1,0 +1,13 @@
+/*Change height and width of barchart using .linechart1 class*/
+.mlinechart1 {
+  --chart-width: 500;
+  --chart-height: 300;
+}
+
+/*Change line color of linechart using #some_id*/
+#samsung {
+  --color: blue;
+}
+#apple {
+  --color: green;
+}

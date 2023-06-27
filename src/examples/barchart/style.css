@@ -1,0 +1,28 @@
+/*Change height and width of barchart using .barchart1 class*/
+.barchart1 {
+  --chart-width: 800;
+  --chart-height: 400;
+}
+
+/*Change bar colors of barchart using #some_id*/
+#spoe {
+  --color: red;
+}
+#oevp {
+  --color: black;
+}
+#fpoe {
+  --color: blue;
+}
+#gruene {
+  --color: green;
+}
+#kpoe {
+  --color: darkred;
+}
+#neos {
+  --color: pink;
+}
+#frank {
+  --color: yellow;
+}

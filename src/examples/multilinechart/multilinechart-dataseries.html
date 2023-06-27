@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Multiline Chart</title>
+    <script src="./easycharts.js" defer></script>
+    <style>
+      .mlinechart1 {
+        --chart-width: 500;
+        --chart-height: 300;
+      }
+      #samsung {
+        --color: blue;
+      }
+      #apple {
+        --color: green;
+      }
+    </style>
+    <!--External stylesheet only possible if used with server (npx gulp)!-->
+    <!-- <link rel="stylesheet" href="./style.css"> -->
+  </head>
+
+  <body>
+    <h1>Multiline Chart Example[Dataseries]</h1>
+    <ec-linechart class="mlinechart1" chart-title="Profits: Apple vs Samsung">
+      <x-axis-title>Time</x-axis-title>
+      <y-axis-title>Profit in Thousands(€)</y-axis-title>
+      <dataseries name="Samsung" id="samsung">
+        <datapoint> 6AM,5 </datapoint>
+        <datapoint> 12PM,10 </datapoint>
+        <datapoint> 6PM,15 </datapoint>
+        <datapoint> 12AM,1 </datapoint>
+      </dataseries>
+      <dataseries name="Apple" id="apple">
+        <datapoint> 6AM,10 </datapoint>
+        <datapoint> 12PM,15 </datapoint>
+        <datapoint> 6PM,20 </datapoint>
+        <datapoint> 12AM,5 </datapoint>
+      </dataseries>
+    </ec-linechart>
+  </body>
+</html>

@@ -3,9 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <title>Bar Chart</title>
-    <script src="../../easycharts.js" defer></script>
+    <script src="./easycharts.js" defer></script>
+    <!--External stylesheet only possible if used with server (npx gulp)!-->
+    <!-- <link rel="stylesheet" href="./style.css"> -->
     <style>
-      /* Place your CSS styles here */
       .barchart1 {
         --chart-width: 500;
         --chart-height: 300;
@@ -36,7 +37,9 @@
 
   <body>
     <h1>Bar Chart Example[Table]</h1>
-    <ec-barchart class="barchart1" chart-title="Styrian Election Results in 2015">
+    <ec-barchart
+      class="barchart1"
+      chart-title="Styrian Election Results in 2015">
       <x-axis-title> Party </x-axis-title>
       <y-axis-title> Percent </y-axis-title>
       <table>
