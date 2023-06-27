@@ -219,7 +219,7 @@ Example usage:
   .mlinechart1 {
     --chart-width: 500;
     --chart-height: 300;
-    --show-ticks; false;
+    --show-ticks: false;
   }
   #samsung {
     --color: blue;
@@ -243,6 +243,7 @@ Example usage:
 ```
 
 ### Other HTML Elements
+
 There are 2 additional HTML elements, which are needed for setting the x and y axis titles:
 
 - `<x-axis-title> X Axis Title </x-axis-title>`
@@ -261,20 +262,20 @@ To install the custom EasyCharts web components, follow these steps:
 3. Install the required dependencies by running the following command in the project root directory:
    > `npm install`
 
-### Building the Project 
+### Building the Project
+
 The project uses Gulp as a build tool. To build the project, run the following command in the project root directory:
 
 > `npx gulp`
 
-This will execute a series of commands: 
+This will execute a series of commands:
 
 1. Copies the `src/examples` folder into `dist/` to provide some examples to the user.
 2. Transpiles the source file `easycharts.mts` and it generates the JavaScript file `easycharts.js` into the `dist/` directory. The transpiliation works using Rollup, whereas it bundles the `easycharts.mts` with components of the D3 library.
 3. Executes the `npm run serve` command creating a local server serving local project files, enabling the user to avoid the Cross Origin Policy. So the user can e.g. input a external CSS file.
 
-
-
 ## Project File-Structure
+
 ```
 EasyCharts
 ├─ .gitignore
@@ -324,4 +325,3 @@ EasyCharts
 ## License
 
 This project is licensed under the `MIT License`.
-
