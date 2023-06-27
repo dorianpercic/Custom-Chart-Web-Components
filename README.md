@@ -252,17 +252,67 @@ To install the custom EasyCharts web components, follow these steps:
 3. Install the required dependencies by running the following command in the project root directory:
    > `npm install`
 
-### Building the Project The project uses Gulp as a
-
-build tool. To build the project, run the following command in the project root directory:
+### Building the Project 
+The project uses Gulp as a build tool. To build the project, run the following command in the project root directory:
 
 > `npx gulp`
 
-This will transpile the source files and generate the
-JavaScript file.
+This will execute a series of commands: 
+
+1. Copies the `src/examples` folder into `dist/` to provide some examples to the user.
+2. Transpiles the source file `easycharts.mts` and it generates the JavaScript file `easycharts.js` into the `dist/` directory. The transpiliation works using Rollup, whereas it bundles the `easycharts.mts` with components of the D3 library.
+3. Executes the `npm run serve` command creating a local server serving local project files, enabling the user to avoid the Cross Origin Policy. So the user can e.g. input a external CSS file.
+
+
 
 ## Project File-Structure
+```
+EasyCharts
+├─ .gitignore
+├─ LICENSE
+├─ README.md
+├─ dist
+│  ├─ easycharts.js
+│  └─ examples
+│     ├─ barchart
+│     │  ├─ barchart-table.html
+│     │  ├─ easycharts.js
+│     │  └─ style.css
+│     ├─ linechart
+│     │  ├─ easycharts.js
+│     │  ├─ linechart-dataseries.html
+│     │  ├─ linechart-table.html
+│     │  └─ style.css
+│     └─ multilinechart
+│        ├─ easycharts.js
+│        ├─ multilinechart-dataseries.html
+│        ├─ multilinechart-table.html
+│        └─ style.css
+├─ gulpfile.mjs
+├─ package-lock.json
+├─ package.json
+├─ rollup.config.mjs
+├─ src
+│  ├─ easycharts.mts
+│  └─ examples
+│     ├─ barchart
+│     │  ├─ barchart-table.html
+│     │  ├─ easycharts.js
+│     │  └─ style.css
+│     ├─ linechart
+│     │  ├─ easycharts.js
+│     │  ├─ linechart-dataseries.html
+│     │  ├─ linechart-table.html
+│     │  └─ style.css
+│     └─ multilinechart
+│        ├─ easycharts.js
+│        ├─ multilinechart-dataseries.html
+│        ├─ multilinechart-table.html
+│        └─ style.css
+└─ tsconfig.json
+```
 
 ## License
 
 This project is licensed under the `MIT License`.
+

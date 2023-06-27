@@ -18,26 +18,20 @@ let Command = {
   },
 };
 
+// Execute rollup bundling
 function rollup() {
   return Command.execute('rollup -c');
 }
 
+// Start local server for serving the project files
 function serve() {
   return Command.execute('npm run serve');
 }
 
+// Copy examples folder from src/ to dist/
 gulp.task('copy-examples', async function () {
-  gulp
-    .src('src/examples/**/*')
-    .pipe(gulp.dest('dist/examples'));
+  gulp.src('src/examples/**/*').pipe(gulp.dest('dist/examples'));
 });
 
 // Default gulp task [npx gulp]
-gulp.task(
-  'default',
-  gulp.series(
-    'copy-examples',
-    rollup,
-    serve
-  )
-);
+gulp.task('default', gulp.series('copy-examples', rollup, serve));
