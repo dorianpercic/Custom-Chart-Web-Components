@@ -458,7 +458,6 @@ function getDataSeriesDict(
   if (!dataSeriesElement) {
     throw new Error('<dataseries> element not found');
   }
-  console.log('Hello');
   let dataDict: { [key: string]: { [innerKey: string]: number } } = {};
   let colorDict: { [key: string]: string } = {};
 
@@ -498,7 +497,6 @@ function getDataSeriesDict(
     });
     dataDict[dataSeriesName] = dataPointsDict;
   });
-  console.log(dataDict);
   return [dataDict, getAxisTitles(classObject), colorDict];
 }
 
