@@ -4448,6 +4448,9 @@ function getTableDict(classObject) {
                     dataDict[label] = tempDict;
                 });
             }
+            else {
+                throw new Error(`At least one <th> has to be present in a <thead>`);
+            }
         }
     }
     return [dataDict, getAxisTitles(classObject), colorsDict];
@@ -4463,6 +4466,7 @@ function getDataSeriesDict(classObject) {
     if (!dataSeriesElement) {
         throw new Error('<dataseries> element not found');
     }
+    console.log('Hello');
     let dataDict = {};
     let colorDict = {};
     dataSeriesElement.forEach(function (dataSeries) {
@@ -4484,7 +4488,7 @@ function getDataSeriesDict(classObject) {
         dataPointElements.forEach((dataPoint) => {
             let dataPointInnerHtml = dataPoint.innerHTML.replace(/\s/g, '');
             let dataValues = dataPointInnerHtml.split(',');
-            if (!dataValues[1]) {
+            if (!dataValues[1] || !dataValues[0]) {
                 throw new Error(`<datapoint> value is missing`);
             }
             else if (!isValidNumber(dataValues[1])) {
@@ -4500,6 +4504,7 @@ function getDataSeriesDict(classObject) {
         });
         dataDict[dataSeriesName] = dataPointsDict;
     });
+    console.log(dataDict);
     return [dataDict, getAxisTitles(classObject), colorDict];
 }
 /**

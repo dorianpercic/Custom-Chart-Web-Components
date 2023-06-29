@@ -33,5 +33,14 @@ gulp.task('copy-examples', async function () {
   gulp.src('src/examples/**/*').pipe(gulp.dest('dist/examples'));
 });
 
+// Copy examples folder from src/ to dist/
+gulp.task('copy-js', async function () {
+  gulp
+    .src('dist/easycharts.js')
+    .pipe(gulp.dest('dist/examples/barchart'))
+    .pipe(gulp.dest('dist/examples/linechart'))
+    .pipe(gulp.dest('dist/examples/multilinechart'));
+});
+
 // Default gulp task [npx gulp]
-gulp.task('default', gulp.series('copy-examples', rollup, serve));
+gulp.task('default', gulp.series('copy-examples', rollup, 'copy-js', serve));

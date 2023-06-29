@@ -340,7 +340,7 @@ class LineChart extends HTMLElement {
       .attr('dy', '.75em')
       .attr('transform', 'rotate(-90)')
       .text(axisTitles['y-axis']);
-      
+
     this.shadowRoot?.appendChild(lineChartSvg.node());
   }
 }
@@ -433,6 +433,8 @@ function getTableDict(
           });
           dataDict[label] = tempDict;
         });
+      } else {
+        throw new Error(`At least one <th> has to be present in a <thead>`);
       }
     }
   }
@@ -456,7 +458,7 @@ function getDataSeriesDict(
   if (!dataSeriesElement) {
     throw new Error('<dataseries> element not found');
   }
-
+  console.log('Hello');
   let dataDict: { [key: string]: { [innerKey: string]: number } } = {};
   let colorDict: { [key: string]: string } = {};
 
@@ -479,7 +481,7 @@ function getDataSeriesDict(
     dataPointElements.forEach((dataPoint) => {
       let dataPointInnerHtml = dataPoint.innerHTML.replace(/\s/g, '');
       let dataValues = dataPointInnerHtml.split(',');
-      if (!dataValues[1]) {
+      if (!dataValues[1] || !dataValues[0]) {
         throw new Error(`<datapoint> value is missing`);
       } else if (!isValidNumber(dataValues[1])) {
         throw new Error(
@@ -496,6 +498,7 @@ function getDataSeriesDict(
     });
     dataDict[dataSeriesName] = dataPointsDict;
   });
+  console.log(dataDict);
   return [dataDict, getAxisTitles(classObject), colorDict];
 }
 
