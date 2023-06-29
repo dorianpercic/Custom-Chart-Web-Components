@@ -103,9 +103,9 @@ class BarChart extends HTMLElement {
       .range([chartHeight, 0]);
 
     const xAxis =
-      showTicks === 'true'
-        ? axisBottom(xScale)
-        : axisBottom(xScale).tickValues([]);
+      showTicks === 'false'
+        ? axisBottom(xScale).tickValues([])
+        : axisBottom(xScale);
     const yAxis = axisLeft(yScale).ticks(5);
 
     barChartSvg
@@ -297,9 +297,9 @@ class LineChart extends HTMLElement {
       }
     });
     const xAxis =
-      showTicks === 'true'
-        ? axisBottom(xScale)
-        : axisBottom(xScale).tickValues([]);
+      showTicks === 'false'
+        ? axisBottom(xScale).tickValues([])
+        : axisBottom(xScale);
 
     lineChartSvg
       .append('text')
