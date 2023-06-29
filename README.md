@@ -40,14 +40,14 @@ The first `<td>` inside `<tbody>` represents the label of the data point and the
 The following attributes are present in a `<th>` element:
 | Attribute | Description |
 |--------------|---------------------------|
-| id | Unique id for data series represented in `<th>`. Used for CSS in linechart for the line color. |
-| class | Class attribute of data series in `<th>`. Used for CSS in linechart for the line color. |
+| id | Unique id for data series represented in `<th>`. Used for CSS in line chart for the line color. |
+| class | Class attribute of data series in `<th>`. Used for CSS in line chart for the line color. |
 
 The following attributes are present in a `<td>` element:
 | Attribute | Description |
 |--------------|---------------------------|
-| id | Unique id for data point represented in `<td>`. Used for CSS in barchart for the bar color. |
-| class | Class attribute of data point in `<td>`. Used for CSS in barchart for the bar color. |
+| id | Unique id for data point represented in `<td>`. Used for CSS in bar chart for the bar color. |
+| class | Class attribute of data point in `<td>`. Used for CSS in bar chart for the bar color. |
 
 #### Data Series
 
@@ -67,14 +67,14 @@ The following attributes are present in a `<dataseries>` element:
 | Attribute | Description |
 |--------------|---------------------------|
 | name | Name of the data series. Necessary for the internal data structure. In multiline chart it represents the line name. |
-| id | Unique id for data series. Used for CSS in linechart for the line color. |
-| class | Class attribute of the data series. Used for CSS in linechart for the line color. |
+| id | Unique id for data series. Used for CSS in line chart for the line color. |
+| class | Class attribute of the data series. Used for CSS in line chart for the line color. |
 
 The following attributes are present in a `<datapoint>` element:
 | Attribute | Description |
 |--------------|---------------------------|
-| id | Unique id for data point. Used for CSS in barchart for the bar color. |
-| class | Class attribute of the data point. Used for CSS in barchart for the bar color. |
+| id | Unique id for data point. Used for CSS in bar chart for the bar color. |
+| class | Class attribute of the data point. Used for CSS in bar chart for the bar color. |
 
 ### Line Chart
 
@@ -273,7 +273,7 @@ This will execute a series of commands:
 
 1. Copies the `src/examples` folder into `dist/` to provide some examples to the user.
 2. Transpiles the source file `easycharts.mts` and it generates the JavaScript file `easycharts.js` into the `dist/` directory. The transpiliation works using Rollup, whereas it bundles the `easycharts.mts` with components of the D3 library.
-3. Executes the `npm run serve` command creating a local server serving local project files, enabling the user to avoid the Cross Origin Policy. So the user can e.g. input a external CSS file.
+3. Executes the `npm run serve` command creating a local server serving local project files, enabling the user to avoid the Cross Origin Policy. So the user can e.g. input an external CSS file.
 
 ## Project File-Structure
 
